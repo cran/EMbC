@@ -1,11 +1,11 @@
 # The EMbC Package for R
-# 
+#
 # Copyright 2013, 2014, 2015 Joan Garriga <jgarriga@ceab.csic.es>, Aitana Oltra <aoltra@ceab.csic.es>, John R.B. Palmer <johnrbpalmer@gmail.com>, Frederic Bartumeus <fbartu@ceab.csic.es>
-#   
+#
 #   EMbC is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or  (at your option) any later version.
-# 
+#
 # EMbC is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License along with this program.  If not, see http://www.gnu.org/licenses.
 
 
@@ -24,7 +24,7 @@ setMethod("clst",signature("binClst"),function(bC,maxItr,info,...){
 
 	minVar <- bC@stdv**2
 	lblDst <- numeric()
-	
+
 	# delimiters
 	Rdel <- lapply(1:bC@k,function(k){
 			lapply(1:bC@m,function(m){
@@ -36,17 +36,17 @@ setMethod("clst",signature("binClst"),function(bC,maxItr,info,...){
 					list(m,kL,kH)}
 				})
 			})
-	Rdel <- t(matrix(unlist(Rdel),c(3,bC@k)))					
+	Rdel <- t(matrix(unlist(Rdel),c(3,bC@k)))
 
 	bC@R <- getRmatrix(bC,info)
 	rownames(bC@R) <- getkLbls(bC,kNmbrs=TRUE)
 	colnames(bC@R) <- c(sapply(seq(bC@m),function(m) paste('X',m,'.min',sep='')),sapply(seq(bC@m),function(m) paste('X',m,'.max',sep='')))
-	
+
 	# initial assignements
 	bC@W <- matrix(rep(1/bC@k,bC@n*bC@k),c(bC@n,bC@k))
 	if (maxItr==0) bC@A <- getClusters(bC)
-	else bC@A <- floor(runif(bC@n,min=1,max=bC@k+1)) 
-	
+	else bC@A <- floor(runif(bC@n,min=1,max=bC@k+1))
+
 	# parameters
 	bC@P <- lapply(seq(bC@k),function(k) list(M=rep(0,bC@m),S=matrix(rep(0,bC@m+bC@m**2),c(bC@m,bC@m+1))))
 	bC@P <- getTheta(bC,minVar)
@@ -58,10 +58,10 @@ setMethod("clst",signature("binClst"),function(bC,maxItr,info,...){
 	A_ <- bC@A
 	R_ <- bC@R
 	stableItr <- 0
-	
+
 	if (maxItr==0) return(bC)
 	for (itrNmb in 1:maxItr){
-  
+
 		# likelihood densities
 		L <- array(-Inf,c(bC@n,bC@k))
 		for (k in seq(bC@k)){
@@ -75,13 +75,13 @@ setMethod("clst",signature("binClst"),function(bC,maxItr,info,...){
 					}
 				}
 			}
-   
+
 		# densities2weights
 		bC@W <- dens2wght(L)
-    
+
 		# new clustering assignments
 		bC@A <- getClusters(bC)
-    
+
 		# likelihood
     	bC@L[itrNmb] <- getLkh(bC,L)
 
@@ -106,10 +106,10 @@ setMethod("clst",signature("binClst"),function(bC,maxItr,info,...){
 				break
 				}
 			}
-    
+
 		A_ <- bC@A
 		R_ <- bC@R
-		
+
 		# M-step: New Reference Values
 		for (i in 1:dim(Rdel)[1]){
 			m  <- Rdel[i,1]
@@ -120,38 +120,38 @@ setMethod("clst",signature("binClst"),function(bC,maxItr,info,...){
 				bC@R[kL,bC@m+m] <- r
 				bC@R[kH,m] <- r}
 			}
-    
-		} 
+
+		}
 	return(bC)
 	})
 
 # EMbC internal functions
 # -----------------------
 
-# Initial Reference Values  
+# Initial Reference Values
 getRmatrix <- function(bC,info){
-  
+
   if (info>=0) cat('... computing starting delimiters:\n')
-  
-  R <- matrix(rep(0,bC@k*bC@m*2),c(bC@k,bC@m*2))  
+
+  R <- matrix(rep(0,bC@k*bC@m*2),c(bC@k,bC@m*2))
   remainingSplits <- list(list(vars=1:bC@m,data=bC@X,clst=rep(-1,bC@m)))
-  
+
   while (length(remainingSplits)>0){
-        
+
     remainingVars <- remainingSplits[[1]]$vars
     splittingData <- remainingSplits[[1]]$data
 
 	hlf <- ceiling(dim(splittingData)[1]/2)
 	dLst <- lapply(remainingVars,function(m){
 		xLst <- as.numeric(names(table(splittingData[,m])))
-		nLst <- sapply(xLst,function(s) length(which(splittingData[,m]<=s)))
+		nLst <- sapply(xLst, function(s) length(which(splittingData[,m]<=s)))
 		s <- xLst[which.min(abs(nLst-hlf))]
 		return(list(m=m,splitVal=s,kPrc=sum((splittingData[,m]-s)**2)/sum(abs(splittingData[,m]-s))**2))})
 
 	splitIdx <-  which.max(lapply(dLst,function(d) d$kPrc))
     splitVar <- dLst[[splitIdx]]$m
     splitVal <- dLst[[splitIdx]]$splitVal
-    
+
     clusterKey <- remainingSplits[[1]]$clst
     patternKey <- which(clusterKey!=-1)
     for (k in 1:bC@k){
@@ -177,7 +177,7 @@ getRmatrix <- function(bC,info){
 		  }
         }
       }
-    
+
     remainingVars <- remainingVars[remainingVars!=splitVar]
     if (length(remainingVars)>0){
 	  lowData <- which(splittingData[,splitVar]<=splitVal)
@@ -193,7 +193,7 @@ getRmatrix <- function(bC,info){
 		remainingSplits[[length(remainingSplits)+1]] <- list(vars=remainingVars,data=splittingData[hghData,],clst=hghClst)
 		}
       }
-        
+
     remainingSplits[[1]] <- NULL
     }
   return(R)
@@ -222,7 +222,7 @@ bound2R <- function(bC,k) {
 	}
 
 # (Rbounded) gaussian parameters
-gssTheta <- function(bC,Xb,UW,k,minVar,lower=-Inf,upper=Inf) { 
+gssTheta <- function(bC,Xb,UW,k,minVar,lower=-Inf,upper=Inf) {
 	Xk  <- bC@X[which(Xb==TRUE),]
 	UWk <- UW[which(Xb==TRUE),]
 	Mk <- as.numeric(lapply(1:bC@m,function(m){sum(UWk[,m]*Xk[,m])/sum(UWk[,m])}))
@@ -318,7 +318,7 @@ stepInfo <- function(bC,lkh,lblDff,itrNmb,info) {
    	if (info>0) stts(bC)
    	if (info>1)	print(bC@R)
 	}
-	
+
 # check cycles
 chckCycl <- function(lblDst){
 	for (i in 1:10){

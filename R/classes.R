@@ -1,18 +1,18 @@
 # The EMbC Package for R
-# 
+#
 # Copyright 2013, 2014, 2015 Joan Garriga <jgarriga@ceab.csic.es>, Aitana Oltra <aoltra@ceab.csic.es>, John R.B. Palmer <johnrbpalmer@gmail.com>, Frederic Bartumeus <fbartu@ceab.csic.es>
-#   
+#
 #   EMbC is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or  (at your option) any later version.
-# 
+#
 # EMbC is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License along with this program.  If not, see http://www.gnu.org/licenses.
 
 # Class: binClst
 # --------------
 
 #' @title Binary Clustering Class
-#' 
+#'
 #' @description \code{binClst} is a generic multivariate binary clustering object.
 #'
 #' @slot X The input data set. A multivariate matrix where each row is a data point and each column is an input feature (a variable).
@@ -27,7 +27,7 @@
 #' @slot A A numeric vector with the clustering labels (annotations) for each data-point (the basic output data). Labels are assigned based on the likelihood weights. Only in case of equal likelihoods the delimiters are used as a further criterion to assign labels.
 #' @slot L The values of likelihood at each step of the optimization process.
 #' @slot C Default color palette used for the plots. Can be changed by means of the setc() function.
-#' 
+#'
 setClass("binClst",
 	representation(
 		X="matrix",
@@ -70,7 +70,7 @@ setClass("binClst",
 #' @title Binary Clustering Path Class
 #'
 #' @description \code{binClstPath} is a \code{binClst} subclass for fast and easy speed/turn-clustering of movement trajectories. The input trajectory is given as a data.frame with, at least, the columns (timeStamp,longitude,latitude). This format is described in detail in the class constructor \link{stbc}. As a \code{binClst} subclass, this class inherits all slots and functionality of its parent class.
-#'  
+#'
 #' @slot pth A data.frame with the trajectory timestamps and geolocation coordinates, plus eventual extra columns that were included in the input path data frame, (see the \link{stbc} constructor).
 #' @slot spn A numeric vector with the time intervals between locations (in seconds).
 #' @slot dst A numeric vector with the distances between locations (in meters). We use loxodromic computations.
@@ -125,28 +125,28 @@ setMethod("initialize","binClstPath",function(.Object,pth=data.frame(),stdv,spdL
 # ------------------
 
 #' @title Binary Clustering Move Class
-#' 
+#'
 #' @description \code{binClstMove} is a \code{binClstPath} subclass for speed/turn-clustering of \code{Move} objects from the \code{move} R-package. This class inherits all slots and functionality of \code{binClstPath} and \code{Move} objects.
-#' 
+#'
 setClass("binClstMove",
 	contains=c("binClstPath","Move"))
-  
+
 setMethod("initialize","binClstMove",function(.Object,obj,stdv,spdLim,smth,scv){
-	bCP <- new('binClstPath',data.frame(obj@timestamps,obj@coords),stdv,spdLim,smth,scv)
+	bCP <- new('binClstPath',data.frame(obj$study.local.timestamp,obj@coords),stdv,spdLim,smth,scv)
 	for(i in slotNames(bCP))
 		slot(.Object,i) <- slot(bCP,i)
 	for(i in slotNames(obj))
 		slot(.Object,i)<-slot(obj,i)
 	.Object})
 
- 
+
 # Class: binClstStck
 # ----------------------
 
 #' @title Binary Clustering Stack Class
 #'
 #' @description \code{binClstStck} is a special class for population level speed/turn-clustering of movement trajectories, given either as path data.frames or \code{move} objects.
-#'  
+#'
 #' @slot bCS A list of either \code{binClstPath} or \code{binClstMove} objects, depending on how the input paths are given.
 #' @slot bC A \code{binClst} instance with the global speed/turn clustering of the paths in the stack.
 #'
@@ -155,7 +155,7 @@ setClass("binClstStck",
 		bCS="list",
 		bC="binClst")
 	)
-  
+
 setMethod("initialize","binClstStck",function(.Object,obj,stdv,spdLim,smth,scv){
 	.Object@bCS <- lapply(obj,function(pth) {
 		if (class(pth)=='data.frame') new('binClstPath',pth,stdv,spdLim,smth,scv)
@@ -164,7 +164,7 @@ setMethod("initialize","binClstStck",function(.Object,obj,stdv,spdLim,smth,scv){
 	X <- .Object@bCS[[1]]@X
 	U <- .Object@bCS[[1]]@U
 	for (i in 2:length(.Object@bCS)){
-		X <- rbind(X,.Object@bCS[[i]]@X)			
+		X <- rbind(X,.Object@bCS[[i]]@X)
 		U <- rbind(U,.Object@bCS[[i]]@U)
 		}
 	if (scv!='None')
@@ -172,4 +172,3 @@ setMethod("initialize","binClstStck",function(.Object,obj,stdv,spdLim,smth,scv){
 	else
 		.Object@bC <- new('binClst',X=X,U=U,stdv=stdv)
 	.Object})
-

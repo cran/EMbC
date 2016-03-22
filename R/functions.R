@@ -1,11 +1,11 @@
 # The EMbC Package for R
-# 
+#
 # Copyright 2013, 2014, 2015 Joan Garriga <jgarriga@ceab.csic.es>, Aitana Oltra <aoltra@ceab.csic.es>, John R.B. Palmer <johnrbpalmer@gmail.com>, Frederic Bartumeus <fbartu@ceab.csic.es>
-#   
+#
 # EMbC is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or  (at your option) any later version.
-# 
+#
 # EMbC is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License along with this program.  If not, see http://www.gnu.org/licenses.
 
 
@@ -87,7 +87,7 @@ loxTht <-function(pth){
 			else {
 				lclTht[i] <- pi/2-lclTht[i]}
 			}
-		}	
+		}
 	return(lclTht)}
 
 getSpeed <- function(bCP){
@@ -122,8 +122,8 @@ bCPStd <- function(pth){
 	names(pth)[1:3] <- c('dTm','lon','lat')
 	return(pth)}
 
-setMarkerSizes <- function(bCP,nMarkerSizeClasses,minMarkerRadius,maxMarkerRadius,logDurations=TRUE){  
-	if(logDurations) 
+setMarkerSizes <- function(bCP,nMarkerSizeClasses,minMarkerRadius,maxMarkerRadius,logDurations=TRUE){
+	if(logDurations)
 		durationVariable = log(bCP@midPoints@data$duration)
 	else
 		durationVariable = bCP@midPoints@data$duration
@@ -135,18 +135,18 @@ setMarkerSizes <- function(bCP,nMarkerSizeClasses,minMarkerRadius,maxMarkerRadiu
 			circleRadiiMeters = (minMarkerRadius+durationScaleFactor*(durationVariable- min(durationVariable)))
 		} else if(nMarkerSizeClasses==1){
 			circleRadiiMeters = rep(minMarkerRadius + (maxMarkerRadius-minMarkerRadius)/2, length(durationVariable))
-		} 
+		}
 		else if(nMarkerSizeClasses>1){
 			markerSizeClasses = minMarkerRadius + (0:(nMarkerSizeClasses-1))*range/(nMarkerSizeClasses-1)
 			circleRadiiMeters = markerSizeClasses[unclass(cut(durationVariable, nMarkerSizeClasses))]
 		} else if(nMarkerSizeClasses < 0) return("Error: nMarkerSizeClasses must be >= 0. Please specify a new value.")
 	} else if(length(nMarkerSizeClasses>1)){
-		if(min(nMarkerSizeClasses)>min(durationVariable)) 
+		if(min(nMarkerSizeClasses)>min(durationVariable))
 			nMarkerSizeClasses = c(min(durationVariable), nMarkerSizeClasses)
-		else if(max(nMarkerSizeClasses)<max(durationVariable)) 
+		else if(max(nMarkerSizeClasses)<max(durationVariable))
 			nMarkerSizeClasses = c(nMarkerSizeClasses,max(durationVariable))
 		markerSizeClasses = minMarkerRadius + (0:(length(nMarkerSizeClasses)-2))*range/(length(nMarkerSizeClasses)-2)
-		circleRadiiMeters = markerSizeClasses[unclass(cut(durationVariable, nMarkerSizeClasses))]   
+		circleRadiiMeters = markerSizeClasses[unclass(cut(durationVariable, nMarkerSizeClasses))]
 	}
 	return(circleRadiiMeters)}
 
@@ -162,7 +162,7 @@ getSolarPos <- function(pth,scv){
 
 # Auxiliar Non-export functions
 # -----------------------------
-	
+
 # binClstpath auxiliary functions
 
 formatSecs <- function(secs){
@@ -172,7 +172,7 @@ formatSecs <- function(secs){
 	return(paste(hr,min,sec,sep=':'))}
 
 formatMeters <- function(meters){
-	if(meters < 1000) return(paste(round(meters, 0), "m"))		
+	if(meters < 1000) return(paste(round(meters, 0), "m"))
 	else return(paste(round(meters/1000, 2), "km"))}
 
 # format Tht parameters to given length and decimals.
@@ -180,7 +180,7 @@ frmTht <- function(Tht,d,w){
 	paste(lapply(1:length(Tht$M),function(m){
 		paste(formatC(Tht$M[m],format='f',digits=d,width=w),formatC(sqrt(Tht$S[m,m]),format='f',digits=d,width=w),sep=" ")}),collapse=" ")
 	}
-	
+
 # clustering binary labels.
 getkLbls <- function(bC,kNmbrs=FALSE)
 	return(lapply(1:bC@k, function(k){
@@ -205,6 +205,16 @@ getSubPth <- function(bCP,showClst){
 	bCP@dst <- bCP@dst[subPth]
 	bCP@A <- bCP@A[subPth]
 	return(bCP)}
+
+# compute proportional limits for path view
+getPropLims <- function(pth, a, b){
+	plims <- list(x=c(min(pth$lon[a:b]), max(pth$lon[a:b])),
+	y=c(min(pth$lat[a:b]), max(pth$lat[a:b])))
+	shorter <- which.min(abs(sapply(plims, diff)))
+	larger <- which.max(abs(sapply(plims, diff)))
+	while (abs(diff(plims[[shorter]])) < abs(diff(plims[[larger]]))) plims[[shorter]] <- plims[[shorter]] + c(-0.0001,+0.0001)
+	return(plims)
+}
 
 # bivariate binary clustering scatterplot with reference lines and legend
 sctr2D <- function(bC){

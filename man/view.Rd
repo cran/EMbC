@@ -9,9 +9,9 @@
 \usage{
 view(obj, ...)
 
-\S4method{view}{binClstPath}(obj, lbl = NULL, lims = NULL, ...)
+\S4method{view}{binClstPath}(obj, lbl = NULL, lims = NULL, bg = NULL, ...)
 
-\S4method{view}{data.frame}(obj, lbl = NULL, lims = NULL, ...)
+\S4method{view}{data.frame}(obj, lbl = NULL, lims = NULL, bg = NULL, ...)
 }
 \arguments{
 \item{obj}{A \link{binClstPath_instance} or a data.frame with the format
@@ -23,7 +23,9 @@ view(obj, ...)
   \link{binClstPath_instance} the clustering labels are used by default.}
 
 \item{lims}{A numeric vector with lower and upper limit locations to show
-  only a chunk of the trajectory.}
+only a chunk of the trajectory.}
+
+\item{bg}{A valid colour especification to be used as background colour. By default a light-grey colour is used to enhance data points visibility.}
 }
 \description{
 \code{view} provides a fast plot of a segmented trajectory or

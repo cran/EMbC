@@ -10,7 +10,7 @@
 sctr(obj, ...)
 
 \S4method{sctr}{binClst}(obj, ref = NULL, showVars = NULL,
-  showClst = NULL, ...)
+  showClst = NULL, bg = NULL, ...)
 
 \S4method{sctr}{binClstStck}(obj, ref = NULL, showVars = NULL,
   showClst = NULL, ...)
@@ -34,6 +34,8 @@ sctr(obj, ...)
   vector (of variable length) indicating a subset of the clusters that will
   be shown in the scatter plot. This is usefull in case of overlapping
   clusters.}
+
+\item{bg}{A valid colour especification to be used as background colour for multivariate scatterplots. By default a light-grey colour is used to enhance data points visibility.}
 }
 \description{
 \code{sctr} generates a scatterplot from a
