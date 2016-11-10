@@ -233,7 +233,7 @@ setMethod("sctr",signature(obj="binClst"),function(obj,ref=NULL,showVars=NULL,sh
 			sctr2D(bCX)
 			}
 		else{
-			if (is.null(bg)) bg <- brewer.pal(8,'Greys')[1]
+			if (is.null(bg)) bg <- brewer.pal(8,'Greys')[4]
 			parDef <- parSet(mtx=matrix(c(1,2,3),1,3,byrow=TRUE), widths=c(1,1,0.5), bg=bg, oma=c(4,1,4,1))
 			sctr3D(bCX,showVars,showClst)
 			}
@@ -244,7 +244,7 @@ setMethod("sctr",signature(obj="binClst"),function(obj,ref=NULL,showVars=NULL,sh
 			sctr2D(obj)
 			}
 		else{
-			if (is.null(bg)) bg <- brewer.pal(8,'Greys')[1]
+			if (is.null(bg)) bg <- brewer.pal(8,'Greys')[4]
 			parDef <- parSet(mtx=matrix(c(1,2,3),1,3,byrow=TRUE),widths=c(1,1,0.5), bg=bg, oma=c(4,1,4,1))
 			sctr3D(obj,showVars,showClst)
 			}
@@ -563,7 +563,7 @@ setMethod("cnfm",signature(obj="binClst",ref="numeric"),function(obj,ref,ret=FAL
 	cMtx[(bC@k+2),(bC@k+2)] <- NaN
 	cMtx[(bC@k+3),(bC@k+1)] <- NaN
 	rowlbls <- getkLbls(bC,kNmbrs=TRUE)
- 	rownames(cMtx) <- c(rowlbls,formatC(c('mrg ','Rcl ','Fms '),width=nchar(rowlbls[[1]]),flag='.'))
+ 	rownames(cMtx) <- c(rowlbls,formatC(c('mrg ','Rcl ','Fms '),width=nchar(rowlbls[[1]])))
 	colnames(cMtx) <- c(paste('cls.',formatC(1:bC@k,width=2,format='d',flag='0'),sep=''),'  mrg.','  Prc.')
 	print(cMtx[1:bC@k,])
  	colnames(cMtx) <- rep('------',(bC@k+2))
@@ -681,7 +681,7 @@ setMethod("rlbl",signature(obj="binClst"),function(obj,old=0,new=0,reset=FALSE){
 	if (!reset && !(all(c(old,new) %in% seq(bC@k))))
 		cat('nothing relabelled!!\n')
 	else{
-		if (reset) bC@A <- getClusters(bC)
+		if (reset) bC@A <- getClusters_cpp(bC@X, bC@U, bC@W, bC@R)
 		else bC@A[which(bC@A==old)] <- new
 		bC@P <- getTheta(bC,bC@stdv**2)
 		assign(deparse(substitute(obj)),bC,envir=parent.frame())

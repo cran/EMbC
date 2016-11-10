@@ -1,3 +1,6 @@
+useDynLib(EMbC)
+importFrom(Rcpp, evalCpp)
+
 import(methods)
 import(RColorBrewer)
 import(sp)
@@ -6,8 +9,6 @@ importFrom("grDevices", "rainbow")
 importFrom("graphics", "axis", "grid", "layout", "legend", "lines", "par", "points", "rect")
 importFrom("stats", "median", "runif")
 importFrom("utils", "browseURL")
-
-importClassesFrom(move,Move)
 
 importFrom(mnormt,dmnorm)
 importFrom(mnormt,rmnorm)
@@ -36,4 +37,3 @@ export(pkml)
 export(bkml)
 export(pmap)
 export(bmap)
-

@@ -3,9 +3,15 @@
 \docType{class}
 \name{binClstStck-class}
 \alias{binClstStck-class}
-\title{Binary Clustering Stack Class}
+\title{Binary Clustering Move Class
+#
+#}
 \description{
-\code{binClstStck} is a special class for population level speed/turn-clustering of movement trajectories, given either as path data.frames or \code{move} objects.
+\code{binClstMove} is a \code{binClstPath} subclass for speed/turn-clustering of \code{Move} objects from the \code{move} R-package. This class inherits all slots and functionality of \code{binClstPath} and \code{Move} objects.
+#
+}
+\details{
+#
 }
 \section{Slots}{
 

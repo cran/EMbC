@@ -90,18 +90,18 @@ setClass("binClstPath",
 		midPoints="SpatialPointsDataFrame"),
 	contains=c("binClst"))
 
-setMethod("initialize","binClstPath",function(.Object,pth=data.frame(),stdv,spdLim,smth,scv){
+setMethod("initialize", "binClstPath", function(.Object, pth=data.frame(),  stdv, spdLim, smth, scv){
 	if (nrow(pth)>0){
 		.Object@pth <- bCPStd(pth)
 		.Object@spn <- c(spanTime(.Object@pth),0)
 		.Object@dst <- c(loxDst(.Object@pth),0)
 		.Object@hdg <- c(loxTht(.Object@pth),0)
 		if (scv!='None'){
-			.Object@X <- cbind(getSolarPos(.Object@pth,scv),getSpeed(.Object),getTurns(.Object))
-      colnames(.Object@X) <- c(scv,'velocity (m/s)','turn (rad)')
-			.Object@stdv <- c(c(5.0,5.0,0.05,0.01,0.005)[which(c('azimuth','height','rheight','rheight2','rheight3')==scv)],stdv)
-			.Object@U <- cbind(rep(1,nrow(pth)),stCertainty(.Object))
-			colnames(.Object@U) <- c('scv.Certainty','vlc.Certainty','trn.Certainty')
+			.Object@X <- cbind(getSolarPos(.Object@pth,scv), getSpeed(.Object), getTurns(.Object))
+			colnames(.Object@X) <- c(scv, 'velocity (m/s)', 'turn (rad)')
+			.Object@stdv <- c(c(5.0,5.0,0.05,0.01,0.005)[which(c('azimuth', 'height')==scv)], stdv)
+			.Object@U <- cbind(rep(1,nrow(pth)), stCertainty(.Object))
+			colnames(.Object@U) <- c('scv.Certainty', 'vlc.Certainty', 'trn.Certainty')
 			if (spdLim>0){
 				.Object@U[which(.Object@X[,2]>spdLim),] <- c(0,0,0)
 				.Object@X[which(.Object@X[,2]>spdLim),2] <- 0}
@@ -121,23 +121,23 @@ setMethod("initialize","binClstPath",function(.Object,pth=data.frame(),stdv,spdL
 	.Object})
 
 
-# Class: binClstMove
-# ------------------
-
-#' @title Binary Clustering Move Class
-#'
-#' @description \code{binClstMove} is a \code{binClstPath} subclass for speed/turn-clustering of \code{Move} objects from the \code{move} R-package. This class inherits all slots and functionality of \code{binClstPath} and \code{Move} objects.
-#'
-setClass("binClstMove",
-	contains=c("binClstPath","Move"))
-
-setMethod("initialize","binClstMove",function(.Object,obj,stdv,spdLim,smth,scv){
-	bCP <- new('binClstPath',data.frame(obj$study.local.timestamp,obj@coords),stdv,spdLim,smth,scv)
-	for(i in slotNames(bCP))
-		slot(.Object,i) <- slot(bCP,i)
-	for(i in slotNames(obj))
-		slot(.Object,i)<-slot(obj,i)
-	.Object})
+# # Class: binClstMove
+# # ------------------
+#
+# #' @title Binary Clustering Move Class
+# #'
+# #' @description \code{binClstMove} is a \code{binClstPath} subclass for speed/turn-clustering of \code{Move} objects from the \code{move} R-package. This class inherits all slots and functionality of \code{binClstPath} and \code{Move} objects.
+# #'
+# setClass("binClstMove",
+# 	contains=c("binClstPath","Move"))
+#
+# setMethod("initialize","binClstMove",function(.Object,obj,stdv,spdLim,smth,scv){
+# 	bCP <- new('binClstPath',data.frame(obj$study.local.timestamp,obj@coords),stdv,spdLim,smth,scv)
+# 	for(i in slotNames(bCP))
+# 		slot(.Object,i) <- slot(bCP,i)
+# 	for(i in slotNames(obj))
+# 		slot(.Object,i)<-slot(obj,i)
+# 	.Object})
 
 
 # Class: binClstStck
@@ -156,10 +156,13 @@ setClass("binClstStck",
 		bC="binClst")
 	)
 
-setMethod("initialize","binClstStck",function(.Object,obj,stdv,spdLim,smth,scv){
-	.Object@bCS <- lapply(obj,function(pth) {
-		if (class(pth)=='data.frame') new('binClstPath',pth,stdv,spdLim,smth,scv)
-		else if (class(pth)=='Move') new('binClstMove',pth,stdv,spdLim,smth,scv)
+setMethod("initialize","binClstStck",function(.Object, obj, stdv, spdLim, smth, scv){
+	.Object@bCS <- lapply(seq(length(obj)), function(i) {
+		bC <- new('binClstPath', obj[[i]], stdv, spdLim, smth, scv)
+		if (is.null(bC)){
+			cat('Error: element number ', i, 'is not a valid data.frame path.\n')
+		}
+		return(bC)
 		})
 	X <- .Object@bCS[[1]]@X
 	U <- .Object@bCS[[1]]@U

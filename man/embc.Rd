@@ -11,7 +11,7 @@ embc(X, U = NULL, stdv = NULL, maxItr = 200, info = 0)
 
 \item{U}{A multivariate matrix with same dimension as X with the values of certainty associated to each corresponding value in X. Ceartainties assign reliability to the data points so that the less reliable is a data point the less its leverage in the clustering. By default certainties are set to one (no uncertainty in any value in X).}
 
-\item{stdv}{a vector with bounds for the maximum precission of clusters, given as minimum standard deviation for each variable, (by default is set to rep(1e-30,ncol(X))}
+\item{stdv}{a vector with bounds for the maximum precission of clusters, given as minimum standard deviation for each variable, (by default is set to rep(sqrt(.Machine$double.eps),ncol(X))}
 
 \item{maxItr}{A limit to the number of iterations in case of slow convergence (defaults to 200).}
 

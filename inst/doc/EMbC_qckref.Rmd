@@ -4,7 +4,7 @@ author: |-
   J.Garriga; F.Bartumeus\
   ICREA Movement Ecology Laboratory (CEAB-CSIC)\
   jgarriga@ceab.csic.es
-date: "Version 1.9.3, `r format(Sys.Date(), '%b %Y')`"
+date: "Version 2.0.0, `r format(Sys.Date(), '%b %Y')`"
 output:
   pdf_document:
     number_sections: yes
@@ -24,7 +24,7 @@ options(width=80)
 
 \bigskip
 \begin{abstract}
-In this document we give a brief overview on the use of the EMbC R-package with special emphasis on its use for behavioural annotation of animal's movement trajectories. For details about the EMbC algorithm please refer to (Garriga et. al 2015) and for further details about the package please refer to the package reference manual.
+In this document we give a brief overview of the EMbC R-package with special emphasis on its use for behavioural annotation of animal's movement trajectories. For details about the EMbC algorithm please refer to (Garriga et. al 2016) and for further details about the package please refer to the package reference manual.
 \end{abstract}
 \bigskip
 
@@ -36,7 +36,7 @@ The method is a variant of the well sounded Expectation-Maximization Clustering 
 
 The  initial assumptions implemented in the EMbC algorithm aim at minimizing biases and sensitivity to initial conditions: (i) each data point is assigned a uniform  probability of belonging to each cluster, (ii) the  prior mixture distribution  is uniform (each  cluster starts with the  same number of  data points), (iii) the  starting partition, (*i.e.* initial delimiters position),  is selected  based on  a global maximum  variance criterion,  thus conveying  the minimum  information possible.
 
-The number of output clusters is $2^m$ determined by the number of input features $m$. This number is only an upper bound as some of the clusters can be merged along the likelihood optimization process. The EMbC algorithm is intended to be used with not more than 5 or 6 input features, yielding a maximum of 32 or 64 clusters. This limitation in the number of clusters is consistent with the main motivation of the algorithm of favouring the semantic interpretation of the results.
+The number of output clusters is $2^m$ determined by the number of input features $m$. This number is only an upper bound as some of the clusters can vanish along the likelihood optimization process. The EMbC algorithm is intended to be used with not more than 5 or 6 input features, yielding a maximum of 32 or 64 clusters. This limitation in the number of clusters is consistent with the main motivation of the algorithm of favouring the semantic interpretation of the results.
 
 The algorithm deals very intuitively with data reliability: the larger the uncertainty associated with a data point, the  smaller the leverage of that data point in the  clustering.
 
@@ -74,7 +74,7 @@ The EMbC package has dependencies with the following packages:
 
 We also suggest the package **rgl**, *3D visualization device system (OpenGL)* [@rgl], to allow for dynamic 3D scatter-plots in multivariate analyses.
 
-Also, for researchers who are familiar with the MoveBank framework, we include a special dependence with the package **move**, *Visualizing and analizing animal track data* [@move], to allow users to make use of *Move* objects with its full functionality.
+For researchers who are familiar with the MoveBank framework, we include a special link with the package **move**, *Visualizing and analizing animal track data* [@move], to allow users to make use of *Move* objects as input trajectories.
 
 ## Basic structure
 
@@ -82,8 +82,7 @@ Basically, the package consists of a hierarchy of classes:
 
   - *binClst*, the main class, representing the binary clustering of a multivariate data set;
   - *binClstPath*, a child class of the former, representing the binary clustering of a trajectory;
-  - *binClstMove*, a class that simultaneously inherits all functionality of a *binClstPath* and a *Move* object from the **move** R-package;
-  - *binClstStck*, basically a list of *binClstPath* or *binClstMove* objects resulting from the global clustering of a stack of trajectories.
+  - *binClstStck*, basically a list of *binClstPath* objects resulting from the global clustering of a stack of trajectories.
 
 Instances of these classes are build by means of two main constructors:
 
@@ -103,54 +102,58 @@ library(EMbC)
 
 # Class: binClst
 
-This is the core class implementing the multivariate binary clustering algorithm. The input data-set is given as a matrix with data points given as rows and input features as columns. No more than 5 (6 at most) variables should be used in order to get a human interpretable set of clusters.
+This is the core class that implements the multivariate binary clustering algorithm. The input data-set is given as a matrix with data points given as rows and input features as columns. No more than 5 (6 at most) variables should be used in order to get a human interpretable set of clusters.
 
-Let's use the object *x2d* included in the package. This object contains a set of bivariate data points generated from a GMM with four components (slot x2d@D), and a labelling indicating which component generated each data point (slot x2d@L);
+Let's use the object *x2d* included in the package. This object contains a set of data points generated from a bivariate GMM with four components (slot x2d@D), and a labelling indicating which component generated each data point (slot x2d@L);
 
-```{r, fig.width=5, fig.height=3.5, fig.align='center'}
-plot(x2d@D,col=x2d@L)
+
+```{r, fig.width=5, fig.height=4.0, fig.align='center'}
+par(mgp=c(1.5, 0.4, 0), cex.lab=0.8, cex.axis=0.8)
+plot(x2d@D, col=x2d@L, xlab='X1', ylab='X2')
+# x2d@D is a matrix with the input data
+# x2d@L is a numeric vector with the reference labelling 
 ```
 
 ## Binary clustering
 
-To perform the clustering of this data-set we simply call the *embc()* constructor passing in a matrix with the input data and naming the output *binClst* object (e.g. mybc);
+To perform the clustering of a data-set we simply call the *embc()* constructor passing in a matrix with the input data and storing the result in a variable (*e.g.* *mybc*);
 
 ```{r, }
 mybc <- embc(x2d@D)
 ```
 
-At each step, the algorithm shows the current iteration number, the likelihood value, the number of effective clusters and the number of data points that have changed their labels with respect to the previous iteration.
+At each iteration, the algorithm shows the iteration number, the current likelihood value, the number of effective clusters and the number of labels that have changed with respect to the previous iteration.
 
 ## Slots
+
+*mybc* is an instance of class *binClst*. Any slot of a *binClst* object is accessible and can be used by (passed to) any R function. The most basic slots of a *binClst* object are:
 
 ```{r, }
 slotNames(mybc)
 ```
 
-The most basic slots of a *binClst* object are:
-
   - mybc@X, a matrix with the input data points;
   - mybc@U, a matrix of the same dimension as the input data matrix, with a reliability value (ranging from 0 to 1) for each input value, (by default is a matrix of ones);
   - mybc@R, a matrix with the values of the delimiters for each binary region;
-  - mybc@P, a list with an element for each cluster, where each element is a named list with the Gaussian parameters of the corresponding Gaussian component;
+  - mybc@P, a list where each element is a named list with the Gaussian parameters of each output cluster;
   - mybc@W, a matrix with the likelihood weights of each data-point with respect to each output cluster;
   - mybc@A, a numeric vector with the output labelling of each location, (the number of the cluster with the highest likelihood weight, coded as 1:LL, 2:LH, 3:HL, and 4:HH).
 
 ## Likelihood Plot
 
-We can check the convergence of the algorithm by plotting the likelihood values at each step;
+The likelihood plot allows a visual assessment of the convergence of the algorithm;
 
-```{r, fig.width=3.8, fig.height=3, fig.show='hold'}
+```{r, fig.width=3.8, fig.height=3.0, fig.show='hold'}
 # the lkhp() function allows an offset parameter;
-lkhp(mybc)      # left panel
-lkhp(mybc,10)   # right panel
+lkhp(mybc)       # left panel
+lkhp(mybc, 10)   # right panel
 ```
 
 The last iterations may show some decrease in likelihood. This is due to a slight discrepancy between binary and optimal likelihood clusterings that can appear at the last steps of the algorithm, normally involving just a few data-points at the boundaries of the binary regions (note the low number of data-points changing their labels beyond iteration number 12 where the likelihood starts decreasing).
 
 ## Clustering parameters
 
-The function *stts()* shows the mean $X_{i}.mn$ and standard deviation $X_{i}.sd$ of the input features in each cluster. The last two columns show the marginal distribution of the cluster in absolute and percentage values;
+The function *stts()* shows the statistics of the clustering. The columns  $X_{i}.mn$ and $X_{i}.sd$ show the mean and standard deviation of the input features. The last two columns show the marginal distribution of the clustering in absolute (number of data-points) and relative (percentage) values;
 
 ```{r, }
 stts(mybc)
@@ -162,7 +165,7 @@ The complete set of parameters of the Gaussian mixture is accessible through the
 mybc@P[[1]]
 ```
 
-The *delimiters* are also accessible through slot mybc@R where we have the *min()* and *max()* values that delimit each binary region;
+The *delimiters* are accessible through the slot mybc@R where we have the *min()* and *max()* values that delimit each binary region;
 
 ```{r, }
 mybc@R
@@ -172,7 +175,7 @@ mybc@R
 
 The function *sctr()* makes a scatter-plot of the data-points, showing the clusters in different colours, and depicting the binary delimiters (light grey lines) to show the binary regions;
 
-```{r, fig.width=5, fig.height=3.5, fig.align='center'}
+```{r, fig.width=5, fig.height=2.5, fig.align='center'}
 sctr(mybc)
 ```
 
@@ -180,21 +183,23 @@ The *NC* in the legend stands for not classified points. Not classified points m
 
 ## Clustering validation
 
-In a supervised case, that is in case that an expert's labelling is available, we can use it to validate the results of the clustering. The expert labelling must be numerically coded and translated to the range of the number of clusters, and must be given as a numeric vector with one numeric label for each location.
+In a supervised case, that is in case that an expert's labelling is available, we can use this labelling to validate the results of the clustering. The expert labelling must be numerically coded and translated to the range of the number of clusters, and must be given as a numeric vector with one numeric label for each location.
 
 We can make a visual validation of the clustering versus the expert labelling by means of the *sctr()* function passing in the expert labelling vector as a second parameter;
 
-```{r, fig.width=5, fig.height=6, fig.align='center'}
-sctr(mybc,x2d@L)
+```{r, fig.width=5, fig.height=4.8, fig.align='center'}
+sctr(mybc, x2d@L)
+# the top plot shows the clustering result;
+# the bottom plot shows the reference labelling;
 ```
 
-We can also perform a numeric assessment of the clustering in terms of a confusion matrix by means of the function *cnfm()*;
+We can perform a numeric assessment of the clustering in terms of a confusion matrix by means of the function *cnfm()*;
 
 ```{r, }
-cnfm(mybc,x2d@L)
+cnfm(mybc, x2d@L)
 ```
 
-The confusion matrix shows values of row *precision* and row *F-measure*, and values of column *recall* and column *F-measure*. The (3,2) subset of cells at the bottom-right show respectively: the *overall accuracy*, the *average recall*, the *average precision*, NaN, NaN and the *Macro-F-measure*.
+The confusion matrix shows values of row *precision* and row *F-measure*, and values of column *recall* and column *F-measure*. The 3x2 subset of cells at the bottom-right show respectively: the *overall accuracy*, the *average recall*, the *average precision*, NaN, NaN and the *Macro-F-measure*.
 
 # Class: binClstPath
 
@@ -208,18 +213,18 @@ As an example, the package includes an object named *expth*. This is a synthetic
 head(expth)
 ```
 
+*expth* is a synthetically generated trajectory with expert labelling (note the column expth\$lbl). Further columns of data can be included in the input *data.frame* as long as the first three columns respect the required format.
+
+**Tip: if an expert labelling is included in a column labelled *lbl*, all validation functions will make use of it by default.**
+
 ## Bivariate velocity-turn clustering
 
-To perform the bivariate velocity/turn clustering of this trajectory we simply call the *stbc()* constructor passing in the data.frame with the time/space coordinates of the trajectory and naming the output *binClstPath* object (*e.g.* *mybcp*);
+To perform the bivariate velocity/turn clustering of this trajectory we simply call the *stbc()* constructor passing in the data.frame with the time/space coordinates of the trajectory and storing the output *binClstPath* object in a variable (*e.g.* *mybcp*);
 
 ```{r, }
-# info=-1 supresses any step wise output information
 mybcp <- stbc(expth, info=-1)
+# info=-1 supresses any step wise output information
 ```
-
-Note that *expth* is a synthetically generated trajectory with expert labelling (note the column expth\$lbl). Further columns of data can be included in the input data.frame as long as the first three columns respect the required format. Particularly, if an expert labelling is included in a column labelled *$lbl*, all validation functions will make use of it by default.
-
-## Slots
 
 The output object *mybcp* is a *binClstPath* instance with the following slots;
 
@@ -227,7 +232,7 @@ The output object *mybcp* is a *binClstPath* instance with the following slots;
 slotNames(mybcp)
 ```
 
-As a child class, a *binClstPath* object inherits and extends the set of slots of the *binClst* class. The basic differences with respect to the *binClst* class are:
+As a child class, a *binClstPath* object inherits and extends the set of slots of the *binClst* class. The basic slot differences with respect to the *binClst* class are:
 
   - mybcp@pth, a data.frame with three first columns named as *dTm*, *lon*, *lat* plus all additional columns of data included in the input data.frame;
   - mybcp@spn, a numeric vector with the computed time span between locations;
@@ -246,46 +251,46 @@ Because of class inheritance, all functionality described for the *binClst* clas
 stts(mybcp)
 ```
 
-```{r, fig.width=5, fig.height=3.5, fig.align='center'}
+```{r, fig.width=5, fig.height=3.0, fig.align='center'}
 sctr(mybcp)
 ```
 
 ```{r, }
-# the expert labelling given in expth$lbl is used by default
 cnfm(mybcp)
+# the expert labelling given in expth$lbl is used by default
 ```
 
-Nonetheless, the *binClstPath* class has some particular functionalities of special interest for the case of behavioural annotation of movement trajectories.
+Nonetheless, the *binClstPath* class has some particular functionalities of special interest for the case of behavioural annotation of movement trajectories described in the following.
 
 ### Labeling profile
 
-The function *lblp()* depicts the temporal series of data along with the temporal profile of the behavioural labelling;
+The function *lblp()* plots the temporal series of data and the temporal profile of the behavioural labelling;
 
-```{r, fig.width=5, fig.height=5, fig.align='center'}
-# lims=c(a,b) limits the plot to a chunk of the trajectory
-lblp(mybcp,lims=c(100,500))
+```{r, fig.width=5, fig.height=3.5, fig.align='center'}
+# lims=c(a, b) limits the plot to a chunk of the trajectory
+lblp(mybcp, lims=c(100, 500))
 ```
 
 ### Fast visualization of the annotated trajectory
 
-The function *view()* shows the annotated trajectory with a top panel depicting the temporal sequence of behaviours;
+The function *view()* shows the annotated trajectory and a top panel with the temporal sequence of behaviours;
 
-```{r, fig.width=6, fig.height=4.5, fig.align='center'}
+```{r, fig.width=5, fig.height=3.5, fig.align='center'}
 # this function allows a parameter lims=c(a,b) as well
-view(mybcp,lims=c(100,500))
+view(mybcp, lims=c(100, 500))
 ```
 
 ### Detailed inspection of the annotated trajectory
 
-We can generate *kml* or *html* documents for a detailed inspection of the output by means of *google-earth* or the user's system browser. The package allows two types of visualization of the annotated trajectory: a point-wise visualization (functions *pkml()* or *pmap()*) or a burst-wise visualization [@embc2015] (functions *bkml()* or *bmap()*);
+We can generate *kml* or *html* documents for a detailed inspection of the output by means of *google-earth* or the user's system browser. The package allows two types of visualization of the annotated trajectory: a point-wise visualization (functions *pkml()* or *pmap()*) or a burst-wise visualization (functions *bkml()* or *bmap()*)  [@embc2015];
 
 ```{r, eval=FALSE}
-# point-wise kml doc generation
-# by setting display=TRUE we can automatically launch google-earth from within R
-pkml(bc,display=TRUE)
+# point-wise kml doc generation;
+# display=TRUE launches google-earth from within R;
+pkml(bc, display=TRUE)
 ```
 
-By default, the *kml* or *html* documents are named with a *Sys.time()* based name and saved in a folder *embcdocs* automatically generated in the user's home directory. This can be modified by means of the corresponding parameters. 
+By default, the *kml* or *html* documents are named with a *Sys.time()* based name and saved in a folder *embcdocs* automatically generated in the user's home directory. This can be modified by means of the corresponding parameters.
 
 The burst-wise visualization requires the computation of burst segments and midpoints. This is computed only the first time that a burst-visualization of a trajectory is requested. In case of long trajectories, this process can take some time.
 
@@ -293,59 +298,61 @@ The burst-wise visualization requires the computation of burst segments and midp
 
 Intermediate data computed by the *stbc()* constructor and stored in the *binClstPath* object can be easily plotted with automatic formatting and labelling of axes;
 
-```{r, fig.width=5, fig.height=4.2, fig.align='center'}
-# time-spans, distances and heading directions;
+```{r, fig.width=5, fig.height=4.8, fig.align='center'}
+# plotting time-spans, distances and heading directions;
+# this is the default behavior when we just pass the binClstPath instance;
 varp(mybcp)
 ```
 
 ```{r, fig.width=5, fig.height=3.5, fig.align='center'}
-# clustering input data (estimated local values of velocity and turn)
+# plotting input data (estimated local values of velocity and turn);
 varp(mybcp@X)
 ```
 
 ```{r, fig.width=5, fig.height=3.5, fig.align='center'}
-# certainties associated to each data-point
+# plotting certainties associated to each data-point (and input feature)
 varp(mybcp@U)
 ```
 
-Indeed, the function *varp()* is a wrapper for the R *plot()* function and can be used to plot any numeric vector. The only advantage is that when the vector is recognized as self data axes are automatically formatted and labelled and thus it provides a fast means for the inspection of intermediate data.
+Indeed, the function *varp()* is a wrapper for the R *plot()* function. The purpose of this function is simply to ease the visualization of intermediate variables by formatting and labelling the axes accordingly to each one.
 
-# Class: binClstMove
+## Using *Move* objects from the R-package *move*
 
-The *binClstMove* is a class that inherits all functionality of a *binClstPath* class and of a *Move* object from the R-package *move*. This is intended for users having trajectories in *Movebank* (<https://www.movebank.org/>) and familiarized with the *move* R-package. *Move* objects can be passed directly to the *stbc()* constructor.
+**Note: the dependency in previous versions of the EMbC R-package with respect to the *move* R-package has been dropped, and the use of the old *binClstMove* objects is now deprecated. Nonetheless *Move* objects can still be passed directly to the *stbc()* function.**
 
-Let's use the example given in the *Move R-package* to spell out further functionality of the package associated to both *binClstPath* and *binClstMove* objects;
+This is intended for users having trajectories in *Movebank* (<https://www.movebank.org/>) and familiarized with the *move* R-package.
 
-```{r, }
+Let's use the example given in the *Move R-package* to spell out further functionality of the package associated to *binClstPath* objects;
+
+```{r, message=FALSE, warning=FALSE}
 # create a move object from a Movebank csv file
 library(move)
-moveObj <- move(system.file("extdata","leroy.csv.gz",package="move"))
+moveObj <- move(system.file("extdata", "leroy.csv.gz", package="move"))
 ```
 
 This data-set is a GPS trajectory of an urban Fisher (*Martes pennati*) with `r length(moveObj@timestamps)` tracks, spanning from `r moveObj@timestamps[1]` to `r moveObj@timestamps[length(moveObj@timestamps)]`, with a mean time interval between tracks of `r round(mean(diff(moveObj@timestamps)),1)` minutes.
 
-## Trivariate clustering: including a daytime covariate
-
-Daytime covariates refer to the solar position. This can be given as solar height in degrees above the horizon (night/day distinction)), or by solar azimuth in degrees from north (sunrise/sunset distinction).
-
-Including daytime covariates is the natural way of incorporating time information in the clustering of an animal's movement trajectory, with the potential advantage of increasing the maximum number of output clusters to $2^3=8$, *i.e.* the number of movement behaviours that can potentially be distinguish.
-
-Including a solar covariate in the clustering is done by means of the parameter *scv* with possible values 'height' or 'azimuth';
+*Move* objects can be passed directly to the *stbc()* constructor;
 
 ```{r, }
 # the moveObj is passed directly to the constructor
-mybc3 <- stbc(moveObj,scv='height',info=-1)
+movebc <- stbc(moveObj, info=-1)
 ```
 
-The output of the *stbc()* constructor is in this case an instance of the *binClstMove* class, and object that simultaneously supports all functionality defined for a *binClstPath* and *Move* objects. Additionally, as we included a covariate, *mybc3* corresponds now to a trivariate binary clustering and therefore its functionality presents some particularities.
+## Trivariate clustering: including a daytime covariate
 
-Note the output message about the final state of the clustering. Along the optimization process the algorithm can reach a situation where a slight discrepancy arises between the binary and the optimal likelihood partitions, involving just a few data-points at the borders of the clusters. The trade-off between these two solutions can lead the algorithm to get stuck into a cycle. The algorithm itself detects this situation and stops the optimization. We can clearly see this with the likelihood plot;
+Daytime covariates refer to the solar position. This can be given as solar height in degrees above the horizon (night/day distinction), or by solar azimuth in degrees from north (sunrise/sunset distinction).
 
-```{r, fig.width=3.8, fig.height=3, fig.show='hold'}
-# the lkhp() function allows an offset parameter;
-lkhp(mybc3)      # left panel
-lkhp(mybc3,50)   # right panel
+Including daytime covariates is the natural way of incorporating time information in the clustering of an animal's movement trajectory, with the potential advantage of increasing the maximum number of output clusters to $2^3=8$, *i.e.* the number of movement behaviours that can potentially be distinguish.
+
+Including a daytime covariate for a trivariate clustering is done by means of the parameter *scv* with possible values 'height' or 'azimuth';
+
+```{r, }
+# the moveObj is passed directly to the constructor
+mybc3 <- stbc(moveObj, scv='height', info=-1)
 ```
+
+The output of the *stbc()* constructor is still a *binClstPath* (the *binClstMove* object of previous versions is deprecated). As we included a covariate, *mybc3* corresponds now to a trivariate binary clustering and therefore its functionality presents some particularities.
 
 Let's see the statistics of the clustering;
 
@@ -357,21 +364,23 @@ Features are ordered as X1:daytime, X2:velocity and X3:turn. Note that highs and
 
 ## Trivariate clustering scatter plot
 
-The *sctr()* function of a trivariate clustering shows by default a double scatter-plot for low and high values of the covariate. This can be changed by means of the parameter *showVars=c()*. 
+By default, the *sctr()* function of a trivariate clustering depicts a double scatter-plot corresponding to low and high values of the covariate respectively. This can be changed by means of the parameter *showVars=c()*.
 
 ```{r, fig.width=6, fig.height=3.5, fig.align='center'}
+sctr(mybc3, showVars=c(1, 2, 3))
 # showVars=c(1,2,3) is the default option and it is only shown for illustrative purposes
-sctr(mybc3,showVars=c(1,2,3))
+# by default the background colour is set to light-grey to enhance visibility
+# the "bg"" parameter allows changing this default behaviour
 ```
 
-If the R-package *rgl* is installed one can use the function *sct3()* to get a dynamic 3D (i.e. can be zoomed and rotated) more useful for a visual understanding of the clusters.
+If the R-package *rgl* is installed one can use the function *sct3()* to get a dynamic 3D (i.e. can be zoomed and rotated) plot, more useful for a visual understanding of the clusters.
 
 ```{r, eval=FALSE}
-# with showClst=c() we can specify a particular subset of clusters to be shown
-sct3(mybc3,showClst=c(5,6,7,8))
+sct3(mybc3, showClst=c(5, 6, 7, 8))
+# with showClst=c() we can restrict the plot to a particular subset of clusters
 ```
 
-This function is indeed defined for and inherited from the *binClst* class, and therefore intended for a general multivariate clustering. If the number of input features is greater than 3, we must use the parameter *showVars=c()* to specify a subset of three variables to be scattered in the plot.
+The *sct3()* function is indeed defined for and inherited from the *binClst* class, and therefore intended for a general multivariate clustering. If the number of input features is greater than 3 and *showVars=c()* is not specified, the first three variables are used by default.
 
 ## Smoothing
 
@@ -384,23 +393,24 @@ The *smth()* function applies a post-smoothing procedure [@embc2015] to the outp
 ```{r, }
 # dlta is the maximum likelihood difference to accept a relabelling
 # dlta=1 (accept all changes) is the default behaviour
-postbc3 <- smth(mybc3,dlta=0.9)
+postbc3 <- smth(mybc3, dlta=0.9)
 ```
 
 Alternatively, a pre-smoothing of the input data is also possible by means of the parameter *smth* of the *stbc()* constructor.
 
 ```{r, }
 # smth sets the smoothing time window length in hours
-prebc3 <- stbc(moveObj,smth=1,scv='height',info=-1)
+prebc3 <- stbc(moveObj, smth=1, scv='height', info=-1)
 ```
 
-The *lblp()* function allows two arguments to compare two output labellings, adding a bottom line indicating the differences;
+The *lblp()* function allows comparing two output labellings, adding a bottom line indicating the differences;
 
 ```{r, fig.width=6, fig.height=3.5, fig.align='center'}
-# regardless of a pre-smoothing, we can still aply a post-smoothing;
+lblp(postbc3, smth(prebc3), lims=c(200, 600))
+# of note:
+# regardless of the pre-smoothing, we can still aply a post-smoothing;
 # there is no real need to instantiate the smoothed copy of prebc3;
 # this is useful for saving memory in case of long trajectories;
-lblp(postbc3,smth(prebc3),lims=c(200,600))
 ```
 
 ## Relabelling
@@ -410,32 +420,33 @@ Note that with a pre-smoothing of the input data, cluster 5 (HLL) has been merge
 Using the *pkml()* function we can visualize which locations correspond to cluster HLH;
 
 ```{r, eval=FALSE}
-pkml(smth(prebc3),showClst=6,display=TRUE)
+pkml(smth(prebc3), showClst=6, display=TRUE)
 ```
 
 \begin{figure}\centering
-  \includegraphics[width=14cm,height=9cm]{pkml0.png}
-\caption{Fisher (\textit{Martes pennati}) foraging trajectory. A kml point-wise view of the annotated trajectory showing only the HLH locations. The blob  shows how these locations are spatially clustered most likely indicating the nests.}
+  \includegraphics[width=12cm,height=5.5cm]{pkml0.png}
+\caption{Fisher (\textit{Martes pennati}) foraging trajectory. A kml point-wise view of the annotated trajectory showing only the HLH locations. The blob shows the spatial clustering of these locations most likely indicating the nest.}
 \label{pkml0}
 \end{figure}
 
-Looking at the spatial distribution of this locations (Figure \ref{pkml0}) and taking into account the HLX labelling (high daytime, low velocity) of the cluster we could tell that these locations are most probably indicating the nests. The package does not deal with labels of the type HLX. However, one can change labels as desired (even to manually force the merging of two clusters). In this case, we would probably feel more comfortable by relabelling the cluster HLH (cluster number 6) as HLL (cluster number 5) to suggest a more clear semantics of *resting* behaviour;
+By combining the spatially clustered distribution of locations HLX (Figure \ref{pkml0}) with the semantics of the cluster (high daytime, low velocity), we could tell that these locations are most probably indicating the nests.
+
+Obviously, the package does not deal with labels like HLX. However, one can change labels as desired (even to manually force the merging of two clusters). In this case, we would probably feel more comfortable by relabelling the cluster HLH (cluster number 6) as HLL (cluster number 5) to suggest a more clear semantics of *resting* behaviour;
 
 ```{r, }
-# the relabelling can be reversed with reset=TRUE
-rlbl(prebc3,6,5)
+rlbl(prebc3, 6, 5)
 ```
 
-Note that the function *rlbl()* does not return a relabelled copy of the input instance, instead it relabels the self instance. Despite of this, the parameters of the clustering remained unchanged. The relabelling is effective only for visualization purposes.
+Note that the function *rlbl()* does not return a relabelled copy of the input instance, instead it relabels the self instance. Nonetheless, the parameters of the clustering remain unchanged. The relabelling is effective only for visualization purposes and can be easily reversed by means of the parameter "reset".
 
 ## Validation versus external information
 
 The *chkp()* function is similar to *lblp()* but plots the labelling profile versus a control variable (*e.g.* environmental information). The control variable must be given as a numeric vector that is depicted as coloured background bars (with specific parameters to control the colouring and legend labels);
 
-```{r, fig.width=6, fig.height=3.5, fig.align='center'}
-# the solar height is the control variable used by default
-# note the previous relabelling in *prebc3*, changing HLH labels to HLL.
-chkp(smth(prebc3),lims=c(200,600))
+```{r, fig.width=6, fig.height=3, fig.align='center'}
+chkp(smth(prebc3), lims=c(200, 600))
+# the solar height is the control variable used by default;
+# note the relabelling we did before;
 ```
 
 # Class: binClstStck
@@ -446,37 +457,35 @@ To illustrate this let's figure out two trajectories from our example path, simu
 
 ```{r, fig.width=3.2, fig.height=3.3, fig.show='hold'}
 tmp <- runif(nrow(expth))
-expth1 <- expth[which(tmp<=0.5),]
-expth2 <- expth[which(tmp>=0.5),]
-view(expth1)
-view(expth2)
+# simulated trajectory of individual 1
+expth1 <- expth[which(tmp<=0.5), ]
+# simulated trajectory of individual 2
+expth2 <- expth[which(tmp>=0.5), ]
 ```
 
-## Stack clustering
-
-To perform the clustering of a stack of trajectories we passed them to the *stbc()* constructor as a list (either of data.frame trajectories, *Move* objects, or a mixture of them);
+To perform the clustering of a stack of trajectories we pass the individual trajectories to the *stbc()* constructor as a list (either of data.frame trajectories, *Move* objects, or a mixture of them);
 
 ```{r, }
 # we can combine data.fame trajectories and move objects
 # only for illustrative purposes !!!
-mystckbc <- stbc(list(expth1,expth2,moveObj),info=-1)
+mystck <- stbc(list(expth1, expth2, moveObj), info=-1)
 ```
 
 In this case, the *stbc()* constructor returns an instance of the *binClstStck* class. In general, all the functionality described for a *binClst* class will work for a *binClstStck* instance;
 
 ```{r, }
-stts(mystckbc)
+stts(mystck)
 ```
 
 ```{r, fig.width=5, fig.height=3.5, fig.align='center'}
-sctr(mystckbc)
+sctr(mystck)
 ```
 
 The exception is the *cnfm()* function. This function will work only if expert's labelling is supplied for all trajectories in the stack (in our example, the *moveObj* trajectory does not have expert's labelling);
 
 ```{r, }
+cnfm(mystck)
 # this will only work when expert labelling is given for all trajectories in the stack
-cnfm(mystckbc)
 ```
 
 ## binClstStck slots
@@ -484,60 +493,64 @@ cnfm(mystckbc)
 It is worth noting that a *binClstStck* instance is not a binary clustering object itself. Instead, it is an object with two slots:
 
 ```{r, }
-slotNames(mystckbc)
+slotNames(mystck)
 ```
 
-- slot mystckbc@bC is a *binClst* object with the population level clustering, thus it has no path associated, and functions like *view()*, *pkml()* or *bkml()* will not work;
+- slot mystck@bC is a *binClst* object with the population level clustering, thus it has no path associated, and functions like *view()*, *pkml()* or *bkml()* will not work;
 
 ```{r, }
-class(mystckbc@bC)
+class(mystck@bC)
 ```
 
-- slot mystckbc@bCS is a list of *binClstPath*/*binClstMove* objects, which are the projections of the population level clustering upon each individual;
+- slot mystck@bCS is a list of *binClstPath* objects, which are the results of the population level clustering upon each individual;
 
 ```{r, }
-class(mystckbc@bCS)
+class(mystck@bCS)
 ```
 
-Each element in the list *mystckbc@bCS* is an instance of the *binClstPath* or *binClstMove* objects in correspondence with the type of data given in the input list;
+Each element in mystck@bCS is a  *binClstPath* instance corresponding to each individual path given in the input data list;
 
 ```{r, }
-lapply(mystckbc@bCS,class)
+lapply(mystck@bCS, class)
 ```
 
-It is important to keep this in mind when applying the above functions to either the population (mystckbc@bC, a *binClst* instance) or the individual (mystckbc@bCS[[i]], *binClstPath*/*binClstMove* instances) levels.
+It is important to keep this in mind when applying the above functions to either the population (mystck@bC, a *binClst* instance) or the individual (mystck@bCS[[i]], a *binClstPath* instance) levels.
 
 ## Select an individual out of the stack
 
 For ease of use, the function *slct()* allows selecting an individual's clustering out of the population level;
 
 ```{r, }
-bcInd1 <- slct(mystckbc,1)
+bcInd1 <- slct(mystck,1)
 ```
 
-As usual, it is not necessary to instantiate each individual. For instance, *sctr(slct(mystckbc,1))* yields the same output as *sctr(bcInd1)* or *sctr(mystckbc@bCS[[1]])*;
+As usual, it is not necessary to instantiate each individual;
 
 ```{r, fig.width=3.7, fig.height=3.2, fig.show='hold'}
-sctr(slct(mystckbc,1))  # left panel
-sctr(slct(mystckbc,3))  # right panel
+sctr(slct(mystck, 1))  # left panel
+sctr(slct(mystck, 3))  # right panel
 ```
 
-## Comparing individual's behaviour with population's mean behaviour
+```{r, }
+# sctr(slct(mystck,1)) yields the same output as sctr(bcInd1) or sctr(mystck@bCS[[1]]);
+```
 
-We can use the functionality of a *binClstPath* object (*e.g.* *sctr()*, *lblp()*, *cnfm()*) to make all kind of comparisons:
+## Comparing individual's behaviour with population's average behaviour
+
+We can use all the functionality of a *binClstPath* object that allows comparisons (*e.g.* *sctr()*, *lblp()*, *cnfm()*) to make numeric assessments or visualizations of diferences among individuals or among individuals and population:
 
 - we can compare individuals with their correspondent out of the population clustering;
 
 ```{r, }
-# comparing individual 1 with its correspondant out of the population
-cnfm(stbc(expth1,info=-1),slct(mystckbc,1))
+cnfm(stbc(expth1, info=-1), slct(mystck, 1))
+# stbc(expth1, info=-1) is the individual level clustering corresponding to individual 1;
+# slct(mystck, 1) is the population level clustering corresponding to individual 1;
 ```
 
 - or we can compare individuals within the population;
-  
+
 ```{r, fig.width=6, fig.height=3.5, fig.align='center'}
-# comparing inividuals 1 and 2 within the population
-lblp(slct(mystckbc,1),slct(mystckbc,2))
+lblp(slct(mystck, 1), slct(mystck, 2))
 ```
 
 

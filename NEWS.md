@@ -1,11 +1,25 @@
+
+# EMbC 2.0.0
+
+## Major improvements
+
+  - Some core functionalities have been implemented using Rcpp. This results in a significant increase in computational speed when using large datasets.
+
+  - With the aim of enhancing the *EMbC* R-package as a real general purpose algorithm, the dependency with respect to the *move* R-package has been dropped. Thus, potential users coming from domains other than ecology are not forced to install packages that are not desired. However, *Move* objects from the *move* R-package can still be used directly as input data.
+
+## Bug fixes
+
+  - the *bg* parameter of the *sctr* function is working properly now.
+
+
 # EMbC 1.9.4
 
 ## Bug fixes
 
-  - When working with *move* objects, version 1.9.3 was picking GMT timestamps instead of using study local timestamps. This has been changed in version 1.9.4. because, otherwise, the solar position covarite (if used) was not conveying the right information. Of note: there is an example in the vignette illustrating the use of *move* objects that is affected by this error. Besides of illustrating the use of a *move* object, this example also depicts a case that exceptionally occurs when there is a discrepancy between the binary and the maximum likelihood partitions of the data, that results in the algorithm getting stuck in a cycle. Interestingly, this problem dissapears when the correct (local) timestaps are used. However, I decided not to rewrite the example in order not to miss the opportunity to explain this exceptional eventuallity.
-  
+  - When working with *move* objects, version 1.9.3 was picking GMT timestamps instead of using study local timestamps. This has been changed in version 1.9.4. Of note: the example in the vignette illustrating the use of *move* objects was affected by this error.
+
 ## Minor improvements
 
   - The command *view* was depicting the trajectory without taking into account the proportionality of the axes. This has been corrected in version 1.9.4.
-  
-  - Commands *view()* and *sctr()* (in the multivariate case) depict plots that by default are using a light-grey background colour to enhance the visibility of the data points. We added a *bg* parameter that allows the user to change this default behaviour.
+
+  - In the multivarite case, commands *view()* and *sctr()* depict plots with a light-grey background colour to enhance the visibility of the data points. We added a *bg* parameter to allow changing this default behaviour.

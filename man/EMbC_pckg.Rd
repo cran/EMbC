@@ -89,8 +89,5 @@ species, and ecological contexts (e.g. migration, foraging).
 \author{
 Joan Garriga \email{jgarriga@ceab.csic.es}
 }
-\seealso{
-\code{\link{move}}
-}
 \keyword{package}
 
