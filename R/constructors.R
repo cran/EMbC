@@ -18,17 +18,17 @@
 #'
 #' @param X The input data set. A multivariate matrix where each row is a data point and each column is an input feature (a variable).
 #'
-#' @param U A multivariate matrix with same dimension as X with the values of certainty associated to each corresponding value in X. Ceartainties assign reliability to the data points so that the less reliable is a data point the less its leverage in the clustering. By default certainties are set to one (no uncertainty in any value in X).
+#' @param U A multivariate matrix with same dimension as X with the values of certainty associated to each corresponding value in X. Certainties assign reliability to the data points so that the less reliable is a data point the less its leverage in the clustering. By default certainties are set to one (no uncertainty in any value in X).
 #'
-#' @param stdv a vector with bounds for the maximum precission of clusters, given as minimum standard deviation for each variable, (by default is set to rep(sqrt(.Machine$double.eps),ncol(X))
+#' @param stdv a vector with bounds for the maximum precision of clusters, given as minimum standard deviation for each variable, (by default is set to rep(sqrt(.Machine$double.eps),ncol(X))
 #'
 #' @param maxItr A limit to the number of iterations in case of slow convergence (defaults to 200).
 #'
 #' @param info Level of information shown at each step:
 #' info=0 (default) shows step likelihood, number of clusters, and number of changing labels;
-#' info=1 includes clustering statistics;
-#' info=2 includes delimiters information;
-#' info<0 supresses any step information.
+#' info=1, include clustering statistics;
+#' info=2, include delimiters information;
+#' info<0, suppress any step information.
 #'
 #' @return Returns a binClst object.
 #'
@@ -67,17 +67,17 @@ embc <- function(X, U=NULL, stdv=NULL, maxItr=200, info=0){
 #'
 #' @param smth A smoothing time interval in hours. This is used to estimate local values of speed and turn computed as an average over a time window centered at each location.
 #'
-#' @param scv A solar position covariate to be used as a daytime indicator. It can be either 'height' (the solar height in degrees above the horizon) or 'azimuth' (the solar azimuth in degrees from north). If it is used, a trivarate clustering is performed, increasing to a maximum of 8 the number of clusters (behaviours) that can potentially be identified. By default this value is set to None (i.e. perform the standard bivariate speed/turn clustering).
+#' @param scv A solar position covariate to be used as a daytime indicator. It can be either 'height' (the solar height in degrees above the horizon) or 'azimuth' (the solar azimuth in degrees from north). If it is used, a trivariate clustering is performed, increasing to a maximum of 8 the number of clusters (behaviours) that can potentially be identified. By default this value is set to None (i.e. perform the standard bivariate speed/turn clustering).
 #'
-#' @param stdv a vector with bounds for the maximum precission of clusters, given as minimum standard deviation for each variable, (by default is set to 0.1 m/s for velocities and 5 degrees for turns).
+#' @param stdv a vector with bounds for the maximum precision of clusters, given as minimum standard deviation for each variable, (by default is set to 0.1 m/s for velocities and 5 degrees for turns).
 #'
 #' @param maxItr A limit to the number of iterations in case of slow convergence (defaults to 200).
 #'
 #' @param info Level of information shown at each step:
 #' info=0 (default) shows step likelihood, number of clusters, and number of changing labels;
-#' info=1 includes clustering statistics;
-#' info=2 includes delimiters information;
-#' info<0 supresses any step information.
+#' info=1, include clustering statistics;
+#' info=2, include delimiters information;
+#' info<0, suppress any step information.
 #'
 #' @return Returns a binClstPath object.
 #'

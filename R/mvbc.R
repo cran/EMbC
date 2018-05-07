@@ -138,7 +138,7 @@ setMethod("clst",signature("binClst"),function(bC,maxItr,info,...){
 # Initial Reference Values (C++)
 getRmatrix_cpp <- function(bC,info){
 
-	if (info>=0) cat('... computing starting delimiters\n')
+	if (info>=0) cat('... computing starting delimiters \n')
 
 	R <- matrix(rep(0, bC@k*bC@m*2), c(bC@k,bC@m*2))
 	remainingSplits <- list(list(vars=1:bC@m, data=bC@X, clst=rep(-1,bC@m)))

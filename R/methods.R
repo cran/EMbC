@@ -81,9 +81,9 @@ setc <- function(bC,fam='RdYlBu'){
 #' @param obj A \code{BinClst_instance} or a list of them.
 #'
 #' @param offSet A numeric value indicating an offset to avoid the initial
-#'   iterations. This is usefull to see the likelihood evolution in the last
+#'   iterations. This is useful to see the likelihood evolution in the last
 #'   iterations where the changes in likelihood are of different order of
-#'   magnitud than those at the starting iterations.
+#'   magnitude than those at the starting iterations.
 #'
 #' @export
 #' @rdname lkhp
@@ -187,7 +187,7 @@ setMethod("stts",signature(obj="binClstStck"),function(obj,dec,width){
 #'
 #' @param ref
 #'
-#'   A numeric vector with expert/reference labelling for visual validation of
+#'   A numeric vector with expert/reference labeling for visual validation of
 #'   the clustering.
 #'
 #'   A second \link{binClst_instance} to be compared with the former.
@@ -198,10 +198,10 @@ setMethod("stts",signature(obj="binClstStck"),function(obj,dec,width){
 #'
 #' @param showClst When the number of variables is greater than two, a numeric
 #'   vector (of variable length) indicating a subset of the clusters that will
-#'   be shown in the scatter plot. This is usefull in case of overlapping
+#'   be shown in the scatter plot. This is useful in case of overlapping
 #'   clusters.
 #'
-#' @param bg A valid colour especification to be used as background colour for multivariate scatterplots. By default a light-grey colour is used to enhance data points visibility.
+#' @param bg A valid colour to be used as background colour for multivariate scatterplots. By default a light-grey colour is used to enhance data points visibility.
 #'
 #' @param ... Parameters \code{ref}, \code{showVars} and \code{showClst} are
 #'   optional.
@@ -212,7 +212,7 @@ setMethod("stts",signature(obj="binClstStck"),function(obj,dec,width){
 #' @examples
 #' # -- apply EMbC to the example path --
 #' mybcp <- stbc(expth,info=-1)
-#' # -- show the scatterplot compared with expert labelling--
+#' # -- show the scatterplot compared with expert labeling--
 #' sctr(mybcp,expth$lbl)
 
 setGeneric("sctr",function(obj,...){standardGeneric("sctr")})
@@ -307,7 +307,7 @@ setMethod("sct3",signature(obj="binClst"),function(obj,showVars=NULL,showClst=NU
  	par(parDef)
 	})
 
-#' @title Labeling profile plot
+#' @title labeling profile plot
 #'
 #' @description \code{lblp} plots the labeling profile of a
 #'   \link{binClst_instance}.
@@ -316,7 +316,7 @@ setMethod("sct3",signature(obj="binClst"),function(obj,showVars=NULL,showClst=NU
 #'
 #' @param ref
 #'
-#'   A numeric vector with an expert's labelling profile.
+#'   A numeric vector with an expert's labeling profile.
 #'
 #'   A second \link{binClst_instance} to be compared with the first.
 #'
@@ -330,7 +330,7 @@ setMethod("sct3",signature(obj="binClst"),function(obj,showVars=NULL,showClst=NU
 #' @examples
 #' # -- apply EMbC to the example path --
 #' mybcp <- stbc(expth)
-#' # -- plot the labeling profile comparing with expert labelling --
+#' # -- plot the labeling profile comparing with expert labeling --
 #' lblp(mybcp,expth$lbl)
 #' # -- compare original and smoothed labeling profiles --
 #' lblp(mybcp,smth(mybcp))
@@ -387,11 +387,11 @@ setMethod("lblp",signature(obj="binClst",ref="binClst"),function(obj,ref,lims=NU
 #' @param obj A \link{binClst_instance}.
 #'
 #' @param ctrlLbls A numeric vector with the control labels or a string
-#'   specifying one of 'height', 'azimuth' or 'both' solar covarites. By
+#'   specifying one of 'height', 'azimuth' or 'both' solar covariates. By
 #'   default, for a \link{binClstPath_instance} it is set to the solar height
 #'   covariate, regardless it has been used or not for the clustering.
 #'
-#' @param ctrlClrs A vector of colors to depict the control labelling. At least
+#' @param ctrlClrs A vector of colors to depict the control labeling. At least
 #'   one colour should be specified for each different control label. By default
 #'   white/grey colours are used for the default control labels.
 #'
@@ -421,8 +421,7 @@ setMethod("chkp",signature(obj="binClst"),function(obj,ctrlLbls=NULL,ctrlClrs=NU
 	if (is.null(ctrlLbls)){
 		if (class(obj)!='binClst') ctrlLbls <- 'height'
 		else {
-			cat('ctrlLbls should be provided \n')
-			return
+			return(message('ctrlLbls should be provided'))
 			}
 		}
 	if (class(ctrlLbls)=='character' && ctrlLbls %in% c('height','azimuth','both')){
@@ -468,15 +467,15 @@ setMethod("chkp",signature(obj="binClst"),function(obj,ctrlLbls=NULL,ctrlClrs=NU
 #' @title Confusion matrix
 #'
 #' @description \code{cnfm} computes the confusion matrix of the clustering with
-#'   respect to an expert/reference labelling of the data. Also, it can be used
-#'   to compare the labellings of two different clusterings of the same
+#'   respect to an expert/reference labeling of the data. Also, it can be used
+#'   to compare the labelings of two different clusterings of the same
 #'   trajectory, (see details).
 #'
 #' @param obj A \link{binClst_instance} or \code{bnClstStck} instance.
 #'
 #' @param ref
 #'
-#'   A numeric vector with an expert/reference labelling of the data.
+#'   A numeric vector with an expert/reference labeling of the data.
 #'
 #'   A second \link{binClst_instance} (see details).
 #'
@@ -488,25 +487,25 @@ setMethod("chkp",signature(obj="binClst"),function(obj,ctrlLbls=NULL,ctrlClrs=NU
 #' @details
 #'
 #' The confusion matrix yields marginal counts and Recall for each row, and
-#' marginal counts, Precission and class F-measure for each column. The 3x2
+#' marginal counts, Precision and class F-measure for each column. The 3x2
 #' subset of cells at the bottom right show (in this order): the overall
 #' Accuracy, the average Recall, the average Precision, NaN, NaN, and the
-#' overall Macro-F-Measure. The number of classes (expert/reference labelling)
+#' overall Macro-F-Measure. The number of classes (expert/reference labeling)
 #' should match or, at least not be greater than the number of clusters. The
 #' overall value of the Macro-F-Measure is an average of the class F-measure
 #' values, hence it is underestimated if the number of classes is lower than the
 #' number of clusters.
 #'
 #' If \code{obj} is a \link{binClstPath_instance} and there is a column "lbl" in
-#' the obj@@pth slot with an expert labelling, this labelling will be used by
+#' the obj@@pth slot with an expert labeling, this labeling will be used by
 #' default.
 #'
 #' If \code{obj} is a \code{binClstStck} instance and, for all paths in the
-#' stack, there is a column "lbl" in the obj@@pth slot of each, this labelling
+#' stack, there is a column "lbl" in the obj@@pth slot of each, this labeling
 #' will be used to compute the confusion matrix for the whole stack.
 #'
 #' If \code{obj} and \code{ref} are both a \link{binClst_instance} (e.g.
-#' smoothed versus non-smoothed), the confusion matrix compares both labellings.
+#' smoothed versus non-smoothed), the confusion matrix compares both labelings.
 #'
 #' @return If ret=TRUE returns a matrix with the confusion matrix values.
 #'
@@ -602,13 +601,15 @@ setMethod("cnfm",signature(obj="binClst",ref="binClst"),function(obj,ref,ret=FAL
 #'   labels (locations that differ from their neighbouring locations while the
 #'   later have equal labels).
 #'
-#' @param obj A \code{binClst_instance}.
+#' @param obj Either a \code{binClst_instance} or a \code{binClstStck_instance}.
 #'
 #' @param dlta A numeric value in the range (0,1) (default is 1) indicating the
 #'   user's will to accept a change of label. The change of label is done
 #'   whenever the decrease in likelihood is not greater then \code{dlta}.
 #'
-#' @return A smoothed copy of the input instance.
+#' @return A smoothed copy of the input instance. In the case of a
+#'   \code{binClstStck_instance} smoothing is performed at population level
+#'   as well as at each individual trajectory in the stack.
 #'
 #' @export
 #' @rdname smth
@@ -622,22 +623,29 @@ setMethod("cnfm",signature(obj="binClst",ref="binClst"),function(obj,ref,ret=FAL
 setGeneric("smth",function(obj,dlta=1){standardGeneric("smth")})
 
 #' @rdname smth
-setMethod("smth",signature(obj="binClst"),function(obj,dlta=1){
+setMethod("smth",signature(obj="binClst"),function(obj, dlta=1){
 		if (dlta>1) return(cat('"dlta" must be in the range (0,1)\n'))
 		return(postSmth(obj,dlta))})
 
-#' @title Manual relabelling of clusters.
+#' @rdname smth
+setMethod("smth",signature(obj="binClstStck"),function(obj, dlta=1){
+		if (dlta>1) return(cat('"dlta" must be in the range (0,1)\n'))
+		obj@bC <- postSmth(obj@bC, dlta)
+		obj@bCS <- lapply(obj@bCS, function(bC) postSmth(bC, dlta))
+		return(obj)})
+
+#' @title Manual relabeling of clusters.
 #'
-#' @description \code{rlbl} Manual relabelling of clusters (to merge clusters or
+#' @description \code{rlbl} Manual relabeling of clusters (to merge clusters or
 #'   relabel merged clusters).
 #'
 #' @param obj A \link{binClst_instance}.
 #'
-#' @param old The number of the cluster to be relabelled.
+#' @param old The number of the cluster to be relabeled.
 #'
 #' @param new The new number of the cluster.
 #'
-#' @param reset A boolean value (defaults to FALSE). If reset=TRUE the labelling
+#' @param reset A boolean value (defaults to FALSE). If reset=TRUE the labeling
 #'   is reset to the original state.
 #'
 #' @details
@@ -645,21 +653,21 @@ setMethod("smth",signature(obj="binClst"),function(obj,dlta=1){
 #' Whenever two adjacent clusters are merged, the label identifying the
 #' splitting variable between them both is meaningless, and the algorithm ends
 #' up assigning either a L or H only depending on how it evolved until reaching
-#' the merging point. Thus it can happen that the final labelling of the
+#' the merging point. Thus it can happen that the final labeling of the
 #' resulting cluster is not the most intuitive one. With this method the labels
 #' can be changed as desired. It can also be used to manually force the merging
 #' of two clusters.
 #'
-#' This method does not return a rellabeled copy of the input \code{obj},
-#' instead the \link{binClst_instance} itself is relabelled. However, this is
-#' intended only for output and visualization pourposes (sctr(), lblp(),
+#' This method does not return a relabeled copy of the input \code{obj},
+#' instead the \link{binClst_instance} itself is relabeled. However, this is
+#' intended only for output and visualization purposes (sctr(), lblp(),
 #' cnfm(), view()) as the \link{binClst_instance} parameters (GMM parameters and
 #' binary delimiters) are not recomputed. Thus the input instance can always be
 #' reset to its original state.
 #'
-#' @return This method does not return a rellabeled copy of the input
-#'   \code{obj}, instead the \link{binClst_instance} itself is relabelled. It is
-#'   intended only for visualization pourposes, as it does not recompute the GMM
+#' @return This method does not return a relabeled copy of the input
+#'   \code{obj}, instead the \link{binClst_instance} itself is relabeled. It is
+#'   intended only for visualization purposes, as it does not recompute the GMM
 #'   parameters nor the binary delimiters of the \link{binClst_instance}.
 #'
 #' @export
@@ -679,7 +687,7 @@ setGeneric("rlbl",function(obj,old=0,new=0,reset=FALSE){standardGeneric("rlbl")}
 setMethod("rlbl",signature(obj="binClst"),function(obj,old=0,new=0,reset=FALSE){
 	bC <- obj
 	if (!reset && !(all(c(old,new) %in% seq(bC@k))))
-		cat('nothing relabelled!!\n')
+		cat('nothing relabeled!!\n')
 	else{
 		if (reset) bC@A <- getClusters_cpp(bC@X, bC@U, bC@W, bC@R)
 		else bC@A[which(bC@A==old)] <- new
@@ -769,7 +777,7 @@ setMethod("varp",signature(obj="matrix"),function(obj,lims=NULL,...){
 #'
 #' @param lims A numeric vector with lower and upper limit locations to show
 #'   only a chunk of the trajectory.
-#' @param bg A valid colour especification to be used as background colour. By default a light-grey colour is used to enhance data points visibility.
+#' @param bg A valid colour to be used as background colour. By default a light-grey colour is used to enhance data points visibility.
 #'
 #' @param ... Parameters \code{lbl} and \code{lims} are optional.
 #'
@@ -974,7 +982,7 @@ setMethod("bkml",signature(obj="binClstPath"),
 #'   be plotted, (defaults to 5 pixels).
 #'
 #' @param display A boolean value (defaults to FALSE) to automatically launch
-#'   the system's default browser from witin R to visualize the generated .html
+#'   the system's default browser from within R to visualize the generated .html
 #'   document.
 #'
 #' @return The path/name of the saved html file.

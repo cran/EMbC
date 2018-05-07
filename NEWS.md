@@ -1,4 +1,10 @@
 
+# EMbC 2.0.1
+
+## Bug fixes
+
+	- Corrected a bug in the post-smoothing function (thanks to Simona Imperio for noting it). Also, we have added a method in the post-smoothing function for binClstStck instances.
+
 # EMbC 2.0.0
 
 ## Major improvements
@@ -9,7 +15,7 @@
 
 ## Bug fixes
 
-  - the *bg* parameter of the *sctr* function is working properly now.
+  - The *bg* parameter of the *sctr* function is working properly now.
 
 
 # EMbC 1.9.4

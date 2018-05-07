@@ -8,7 +8,7 @@ library(EMbC)
 par(mgp=c(1.5, 0.4, 0), cex.lab=0.8, cex.axis=0.8)
 plot(x2d@D, col=x2d@L, xlab='X1', ylab='X2')
 # x2d@D is a matrix with the input data
-# x2d@L is a numeric vector with the reference labelling 
+# x2d@L is a numeric vector with the reference labelling
 
 ## -----------------------------------------------------------------------------
 mybc <- embc(x2d@D)
@@ -88,44 +88,42 @@ varp(mybcp@X)
 varp(mybcp@U)
 
 ## ---- message=FALSE, warning=FALSE--------------------------------------------
-# create a move object from a Movebank csv file
 library(move)
-moveObj <- move(system.file("extdata", "leroy.csv.gz", package="move"))
+data(leroy)
+
+## ---- warning=FALSE-----------------------------------------------------------
+# leroy is passed directly to the constructor
+leroybc <- stbc(leroy, info=-1)
 
 ## -----------------------------------------------------------------------------
-# the moveObj is passed directly to the constructor
-movebc <- stbc(moveObj, info=-1)
+leroybc3 <- stbc(leroy, scv='height', info=-1)
 
 ## -----------------------------------------------------------------------------
-# the moveObj is passed directly to the constructor
-mybc3 <- stbc(moveObj, scv='height', info=-1)
-
-## -----------------------------------------------------------------------------
-stts(mybc3)
+stts(leroybc3)
 
 ## ---- fig.width=6, fig.height=3.5, fig.align='center'-------------------------
-sctr(mybc3, showVars=c(1, 2, 3))
+sctr(leroybc3, showVars=c(1, 2, 3))
 # showVars=c(1,2,3) is the default option and it is only shown for illustrative purposes
 # by default the background colour is set to light-grey to enhance visibility
 # the "bg"" parameter allows changing this default behaviour
 
 ## ---- eval=FALSE--------------------------------------------------------------
-#  sct3(mybc3, showClst=c(5, 6, 7, 8))
+#  sct3(leroybc3, showClst=c(5, 6, 7, 8))
 #  # with showClst=c() we can restrict the plot to a particular subset of clusters
 
 ## -----------------------------------------------------------------------------
 # dlta is the maximum likelihood difference to accept a relabelling
 # dlta=1 (accept all changes) is the default behaviour
-postbc3 <- smth(mybc3, dlta=0.9)
+postbc3 <- smth(leroybc3, dlta=0.9)
 
 ## -----------------------------------------------------------------------------
 # smth sets the smoothing time window length in hours
-prebc3 <- stbc(moveObj, smth=1, scv='height', info=-1)
+prebc3 <- stbc(leroy, smth=1, scv='height', info=-1)
 
 ## ---- fig.width=6, fig.height=3.5, fig.align='center'-------------------------
 lblp(postbc3, smth(prebc3), lims=c(200, 600))
 # of note:
-# regardless of the pre-smoothing, we can still aply a post-smoothing;
+# although performing a pre-smoothing, we can still aply a post-smoothing;
 # there is no real need to instantiate the smoothed copy of prebc3;
 # this is useful for saving memory in case of long trajectories;
 
@@ -150,7 +148,7 @@ expth2 <- expth[which(tmp>=0.5), ]
 ## -----------------------------------------------------------------------------
 # we can combine data.fame trajectories and move objects
 # only for illustrative purposes !!!
-mystck <- stbc(list(expth1, expth2, moveObj), info=-1)
+mystck <- stbc(list(expth1, expth2, leroy), info=-1)
 
 ## -----------------------------------------------------------------------------
 stts(mystck)

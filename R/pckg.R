@@ -7,7 +7,7 @@
 #' motivations: (i) it looks for a good compromise between statistical soundness
 #' and ease and generality of use - by minimizing prior assumptions and favouring
 #' the semantic interpretation of the final clustering - and, (ii) it allows
-#' taking into account the uncertainty in the data. These two fetaures make it
+#' taking into account the uncertainty in the data. These features make it
 #' specially suitable for the behavioural annotation of animal's movement
 #' trajectories.
 #'
@@ -34,7 +34,7 @@
 #'
 #' The number of output clusters is $2^m$ determined by the number of input features
 #' $m$. This number is only an upper bound as some of the clusters can be merged along
-#' the likelihood optimization process. The EMbC algorithm is intented to be used with
+#' the likelihood optimization process. The EMbC algorithm is intended to be used with
 #' not more than 5 or 6 input features, yielding a maximum of 32 or 64 clusters. This
 #' limitation in the number of clusters is consistent with the main motivation of the
 #' algorithm of favouring the semantic interpretation of the results.
@@ -59,7 +59,7 @@
 #' scheduling.
 #'
 #' Input movement trajectories are given either as a *data.frame* or a *Move* object
-#' from the **move** R-package.  The pakage deals also with stacks of trajectories for
+#' from the **move** R-package.  The package deals also with stacks of trajectories for
 #' population level analysis. Segmentation is based on local estimates of velocity and
 #' turning angle, eventually including a solar position covariate as a daytime
 #' indicator.
@@ -71,13 +71,13 @@
 #'  * clustering scatterplot (2D and 3D)
 #'  * temporal labeling profile (ethogram),
 #'  * plotting of intermediate variables,
-#'  * confusion matrix (numerical validation with respect to an expert's labelling),
+#'  * confusion matrix (numerical validation with respect to an expert's labeling),
 #'  * visual validation with external information (e.g. environmental data),
 #'  * generation of kml or webmap docs for detailed inspection of the output.
 #'
 #' Also, some functions are provided to further refine the output, either by
 #' pre-processing (smoothing) the input data or by post-processing (smoothing,
-#' relabelling, merging) the output labelling.
+#' relabeling, merging) the output labeling.
 #'
 #' The results obtained for different empirical datasets suggest that the EMbC
 #' algorithm  behaves reasonably well for a wide range  of tracking technologies,
@@ -124,7 +124,7 @@ NULL
 
 #' Synthetic path used in the examples
 #'
-#' A data.frame with a synthetically generated trajectory with colum values (timeStamps, longituds, latitudes, labels) and column headers ('dTm','lon','lat','lbl'). The order of the columns is important. Column headers can be whatever but are expected to be there. The only exception is the header for the labels column: if headed as 'lbl' it will be used automatically by any methods that can make use of it.
+#' A data.frame with a synthetically generated trajectory with column values (timeStamps, longitudes, latitudes, labels) and column headers ('dTm','lon','lat','lbl'). The order of the columns is important. Column headers can be whatever but are expected to be there. The only exception is the header for the labels column: if headed as 'lbl' it will be used automatically by any methods that can make use of it.
 #'
 #' @rdname expth
 #' @name expth

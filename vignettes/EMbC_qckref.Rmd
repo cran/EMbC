@@ -4,7 +4,7 @@ author: |-
   J.Garriga; F.Bartumeus\
   ICREA Movement Ecology Laboratory (CEAB-CSIC)\
   jgarriga@ceab.csic.es
-date: "Version 2.0.0, `r format(Sys.Date(), '%b %Y')`"
+date: "Version 2.0.1, `r format(Sys.Date(), '%b %Y')`"
 output:
   pdf_document:
     number_sections: yes
@@ -111,7 +111,7 @@ Let's use the object *x2d* included in the package. This object contains a set o
 par(mgp=c(1.5, 0.4, 0), cex.lab=0.8, cex.axis=0.8)
 plot(x2d@D, col=x2d@L, xlab='X1', ylab='X2')
 # x2d@D is a matrix with the input data
-# x2d@L is a numeric vector with the reference labelling 
+# x2d@L is a numeric vector with the reference labelling
 ```
 
 ## Binary clustering
@@ -215,7 +215,7 @@ head(expth)
 
 *expth* is a synthetically generated trajectory with expert labelling (note the column expth\$lbl). Further columns of data can be included in the input *data.frame* as long as the first three columns respect the required format.
 
-**Tip: if an expert labelling is included in a column labelled *lbl*, all validation functions will make use of it by default.**
+**Tip: by including an expert labelling with a column labelled *lbl* all validation functions will make use of it by default.**
 
 ## Bivariate velocity-turn clustering
 
@@ -260,7 +260,7 @@ cnfm(mybcp)
 # the expert labelling given in expth$lbl is used by default
 ```
 
-Nonetheless, the *binClstPath* class has some particular functionalities of special interest for the case of behavioural annotation of movement trajectories described in the following.
+Nonetheless, the *binClstPath* class has some particular functionalities of special interest for the case of behavioural annotation of movement trajectories. These functionalities are described in the following.
 
 ### Labeling profile
 
@@ -318,25 +318,20 @@ Indeed, the function *varp()* is a wrapper for the R *plot()* function. The purp
 
 ## Using *Move* objects from the R-package *move*
 
-**Note: the dependency in previous versions of the EMbC R-package with respect to the *move* R-package has been dropped, and the use of the old *binClstMove* objects is now deprecated. Nonetheless *Move* objects can still be passed directly to the *stbc()* function.**
+**Note: the dependency with respect to the *move* R-package has been dropped, and the use of the old *binClstMove* objects is now deprecated. Nonetheless *Move* objects can still be passed directly to the *stbc()* function.**
 
-This is intended for users having trajectories in *Movebank* (<https://www.movebank.org/>) and familiarized with the *move* R-package.
-
-Let's use the example given in the *Move R-package* to spell out further functionality of the package associated to *binClstPath* objects;
+This is intended for users having trajectories in *Movebank* (<https://www.movebank.org/>) and familiarized with the *move* R-package. Let's use the *leroy* data in the *Move R-package*.
 
 ```{r, message=FALSE, warning=FALSE}
-# create a move object from a Movebank csv file
 library(move)
-moveObj <- move(system.file("extdata", "leroy.csv.gz", package="move"))
+data(leroy)
 ```
 
-This data-set is a GPS trajectory of an urban Fisher (*Martes pennati*) with `r length(moveObj@timestamps)` tracks, spanning from `r moveObj@timestamps[1]` to `r moveObj@timestamps[length(moveObj@timestamps)]`, with a mean time interval between tracks of `r round(mean(diff(moveObj@timestamps)),1)` minutes.
+*leroy* is a GPS trajectory of an urban Fisher (*Martes pennati*) with `r length(leroy@timestamps)` tracks, spanning from `r leroy@timestamps[1]` to `r leroy@timestamps[length(leroy@timestamps)]`, with a mean time interval between tracks of `r round(mean(diff(leroy@timestamps)),1)` minutes. *Move* objects can be passed directly to the *stbc()* constructor;
 
-*Move* objects can be passed directly to the *stbc()* constructor;
-
-```{r, }
-# the moveObj is passed directly to the constructor
-movebc <- stbc(moveObj, info=-1)
+```{r, warning=FALSE}
+# leroy is passed directly to the constructor
+leroybc <- stbc(leroy, info=-1)
 ```
 
 ## Trivariate clustering: including a daytime covariate
@@ -345,19 +340,18 @@ Daytime covariates refer to the solar position. This can be given as solar heigh
 
 Including daytime covariates is the natural way of incorporating time information in the clustering of an animal's movement trajectory, with the potential advantage of increasing the maximum number of output clusters to $2^3=8$, *i.e.* the number of movement behaviours that can potentially be distinguish.
 
-Including a daytime covariate for a trivariate clustering is done by means of the parameter *scv* with possible values 'height' or 'azimuth';
+A trivariate clustering including a daytime covariate is done by means of the parameter *scv* with possible values 'height' or 'azimuth';
 
 ```{r, }
-# the moveObj is passed directly to the constructor
-mybc3 <- stbc(moveObj, scv='height', info=-1)
+leroybc3 <- stbc(leroy, scv='height', info=-1)
 ```
 
-The output of the *stbc()* constructor is still a *binClstPath* (the *binClstMove* object of previous versions is deprecated). As we included a covariate, *mybc3* corresponds now to a trivariate binary clustering and therefore its functionality presents some particularities.
+The output of the *stbc()* constructor is still a *binClstPath* (the *binClstMove* object of previous versions is deprecated). As we included a covariate, *leroybc3* corresponds now to a trivariate binary clustering and therefore its functionality presents some particularities.
 
 Let's see the statistics of the clustering;
 
 ```{r, }
-stts(mybc3)
+stts(leroybc3)
 ```
 
 Features are ordered as X1:daytime, X2:velocity and X3:turn. Note that highs and lows for daytime (the solar height in degrees above the horizon) do not necessarily correspond to daytime or night-time clusters (note the negative mean for X1 in HXX clusters). This is so because almost all of the activity of this animal happens during the night and it is more likely to discern different behaviours along night-time.
@@ -367,7 +361,7 @@ Features are ordered as X1:daytime, X2:velocity and X3:turn. Note that highs and
 By default, the *sctr()* function of a trivariate clustering depicts a double scatter-plot corresponding to low and high values of the covariate respectively. This can be changed by means of the parameter *showVars=c()*.
 
 ```{r, fig.width=6, fig.height=3.5, fig.align='center'}
-sctr(mybc3, showVars=c(1, 2, 3))
+sctr(leroybc3, showVars=c(1, 2, 3))
 # showVars=c(1,2,3) is the default option and it is only shown for illustrative purposes
 # by default the background colour is set to light-grey to enhance visibility
 # the "bg"" parameter allows changing this default behaviour
@@ -376,11 +370,11 @@ sctr(mybc3, showVars=c(1, 2, 3))
 If the R-package *rgl* is installed one can use the function *sct3()* to get a dynamic 3D (i.e. can be zoomed and rotated) plot, more useful for a visual understanding of the clusters.
 
 ```{r, eval=FALSE}
-sct3(mybc3, showClst=c(5, 6, 7, 8))
+sct3(leroybc3, showClst=c(5, 6, 7, 8))
 # with showClst=c() we can restrict the plot to a particular subset of clusters
 ```
 
-The *sct3()* function is indeed defined for and inherited from the *binClst* class, and therefore intended for a general multivariate clustering. If the number of input features is greater than 3 and *showVars=c()* is not specified, the first three variables are used by default.
+The *sct3()* function is defined for and inherited from the *binClst* class, and therefore intended for a general multivariate clustering. If the number of input features is greater than 3 and *showVars=c()* is not specified, the first three variables are used by default.
 
 ## Smoothing
 
@@ -393,14 +387,14 @@ The *smth()* function applies a post-smoothing procedure [@embc2015] to the outp
 ```{r, }
 # dlta is the maximum likelihood difference to accept a relabelling
 # dlta=1 (accept all changes) is the default behaviour
-postbc3 <- smth(mybc3, dlta=0.9)
+postbc3 <- smth(leroybc3, dlta=0.9)
 ```
 
 Alternatively, a pre-smoothing of the input data is also possible by means of the parameter *smth* of the *stbc()* constructor.
 
 ```{r, }
 # smth sets the smoothing time window length in hours
-prebc3 <- stbc(moveObj, smth=1, scv='height', info=-1)
+prebc3 <- stbc(leroy, smth=1, scv='height', info=-1)
 ```
 
 The *lblp()* function allows comparing two output labellings, adding a bottom line indicating the differences;
@@ -408,14 +402,14 @@ The *lblp()* function allows comparing two output labellings, adding a bottom li
 ```{r, fig.width=6, fig.height=3.5, fig.align='center'}
 lblp(postbc3, smth(prebc3), lims=c(200, 600))
 # of note:
-# regardless of the pre-smoothing, we can still aply a post-smoothing;
+# although performing a pre-smoothing, we can still aply a post-smoothing;
 # there is no real need to instantiate the smoothed copy of prebc3;
 # this is useful for saving memory in case of long trajectories;
 ```
 
 ## Relabelling
 
-Note that with a pre-smoothing of the input data, cluster 5 (HLL) has been merged into cluster 6 (HLH) and we get a final clustering with only 7 different behaviours. When merging occurs, the semantics of the final labelling is somewhat misleading because the final labelling is only a result of how the algorithm evolved until reaching the merging point. In any case, the label should be read as HLX, that is, by taking into account that the last feature (in this case the turn) is meaningless given the values of the rest (*i.e* turn can be either H or L given H values of daytime and L values of velocity).
+Note that by pre-smoothing the input data, cluster 5 (HLL) has been merged into cluster 6 (HLH) and we get a final clustering with only 7 different behaviours. When merging occurs, the semantics of the final labelling is somewhat misleading because the final labelling is only a result of how the algorithm evolved until reaching the merging point. In any case, the label should be read as HLX, that is, by taking into account that the last feature (in this case the turn) is meaningless given the values of the rest (*i.e* turn can be either H or L given H values of daytime and L values of velocity).
 
 Using the *pkml()* function we can visualize which locations correspond to cluster HLH;
 
@@ -424,7 +418,7 @@ pkml(smth(prebc3), showClst=6, display=TRUE)
 ```
 
 \begin{figure}\centering
-  \includegraphics[width=12cm,height=5.5cm]{pkml0.png}
+\includegraphics[width=12cm,height=5.5cm]{pkml0.png}
 \caption{Fisher (\textit{Martes pennati}) foraging trajectory. A kml point-wise view of the annotated trajectory showing only the HLH locations. The blob shows the spatial clustering of these locations most likely indicating the nest.}
 \label{pkml0}
 \end{figure}
@@ -468,7 +462,7 @@ To perform the clustering of a stack of trajectories we pass the individual traj
 ```{r, }
 # we can combine data.fame trajectories and move objects
 # only for illustrative purposes !!!
-mystck <- stbc(list(expth1, expth2, moveObj), info=-1)
+mystck <- stbc(list(expth1, expth2, leroy), info=-1)
 ```
 
 In this case, the *stbc()* constructor returns an instance of the *binClstStck* class. In general, all the functionality described for a *binClst* class will work for a *binClstStck* instance;
@@ -481,7 +475,7 @@ stts(mystck)
 sctr(mystck)
 ```
 
-The exception is the *cnfm()* function. This function will work only if expert's labelling is supplied for all trajectories in the stack (in our example, the *moveObj* trajectory does not have expert's labelling);
+The exception is the *cnfm()* function. This function will work only if expert's labelling is supplied for all trajectories in the stack (in our example, *leroy*  does not have expert's labelling);
 
 ```{r, }
 cnfm(mystck)

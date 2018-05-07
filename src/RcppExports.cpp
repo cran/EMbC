@@ -8,7 +8,7 @@ using namespace Rcpp;
 
 // splitPrc_cpp
 Rcpp::List splitPrc_cpp(arma::vec X);
-RcppExport SEXP EMbC_splitPrc_cpp(SEXP XSEXP) {
+RcppExport SEXP _EMbC_splitPrc_cpp(SEXP XSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -19,7 +19,7 @@ END_RCPP
 }
 // bound2R_cpp
 Rcpp::LogicalVector bound2R_cpp(Rcpp::NumericMatrix X, Rcpp::NumericVector Rk);
-RcppExport SEXP EMbC_bound2R_cpp(SEXP XSEXP, SEXP RkSEXP) {
+RcppExport SEXP _EMbC_bound2R_cpp(SEXP XSEXP, SEXP RkSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -31,7 +31,7 @@ END_RCPP
 }
 // getClusters_cpp
 Rcpp::NumericVector getClusters_cpp(arma::mat X, arma::mat U, arma::mat W, arma::mat R);
-RcppExport SEXP EMbC_getClusters_cpp(SEXP XSEXP, SEXP USEXP, SEXP WSEXP, SEXP RSEXP) {
+RcppExport SEXP _EMbC_getClusters_cpp(SEXP XSEXP, SEXP USEXP, SEXP WSEXP, SEXP RSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -45,7 +45,7 @@ END_RCPP
 }
 // dens2wght_cpp
 arma::mat dens2wght_cpp(arma::mat L);
-RcppExport SEXP EMbC_dens2wght_cpp(SEXP LSEXP) {
+RcppExport SEXP _EMbC_dens2wght_cpp(SEXP LSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -56,7 +56,7 @@ END_RCPP
 }
 // getLkh_cpp
 double getLkh_cpp(arma::mat L);
-RcppExport SEXP EMbC_getLkh_cpp(SEXP LSEXP) {
+RcppExport SEXP _EMbC_getLkh_cpp(SEXP LSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -64,4 +64,18 @@ BEGIN_RCPP
     rcpp_result_gen = Rcpp::wrap(getLkh_cpp(L));
     return rcpp_result_gen;
 END_RCPP
+}
+
+static const R_CallMethodDef CallEntries[] = {
+    {"_EMbC_splitPrc_cpp", (DL_FUNC) &_EMbC_splitPrc_cpp, 1},
+    {"_EMbC_bound2R_cpp", (DL_FUNC) &_EMbC_bound2R_cpp, 2},
+    {"_EMbC_getClusters_cpp", (DL_FUNC) &_EMbC_getClusters_cpp, 4},
+    {"_EMbC_dens2wght_cpp", (DL_FUNC) &_EMbC_dens2wght_cpp, 1},
+    {"_EMbC_getLkh_cpp", (DL_FUNC) &_EMbC_getLkh_cpp, 1},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_EMbC(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
 }

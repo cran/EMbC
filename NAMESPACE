@@ -10,10 +10,10 @@ importFrom("graphics", "axis", "grid", "layout", "legend", "lines", "par", "poin
 importFrom("stats", "median", "runif")
 importFrom("utils", "browseURL")
 
-importFrom(mnormt,dmnorm)
-importFrom(mnormt,rmnorm)
-importFrom(mnormt,pd.solve)
-importFrom(maptools,solarpos)
+importFrom(mnormt, dmnorm)
+importFrom(mnormt, rmnorm)
+importFrom(mnormt, pd.solve)
+importFrom(maptools, solarpos)
 
 export(embc)
 export(stbc)
