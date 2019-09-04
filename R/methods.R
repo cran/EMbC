@@ -890,8 +890,8 @@ setMethod("pkml",signature(obj="binClstPath"),
 			if(.Platform$OS.type=='windows')
 				shell.exec(kmlD@fName)
 			else{
-			  google <- c('/usr/bin/google-earth','/usr/bin/googleearth')
-				system(paste(google[which(file.exists(google))],kmlD@fName,'&',sep=" "),ignore.stdout=TRUE,ignore.stderr=TRUE)
+				gearth <- c('/usr/bin/google-earth', '/usr/bin/googleearth', '/usr/bin/google-earth-pro')
+				system(paste(gearth[which(file.exists(gearth))], kmlD@fName, '&' , sep = " "), ignore.stdout = TRUE, ignore.stderr = TRUE)
 			  }
 		}
 	return(cat('saved file ',kmlD@fName,'\n'))
@@ -946,12 +946,12 @@ setMethod("bkml",signature(obj="binClstPath"),
 		if(display){
 			if(.Platform$OS.type=='windows')
 				shell.exec(kmlD@fName)
-		  else{
-		    google <- c('/usr/bin/google-earth','/usr/bin/googleearth')
-		    system(paste(google[which(file.exists(google))],kmlD@fName,'&',sep=" "),ignore.stdout=TRUE,ignore.stderr=TRUE)
-		  }
+			else{
+				gearth <- c('/usr/bin/google-earth', '/usr/bin/googleearth', '/usr/bin/google-earth-pro')
+				system(paste(gearth[which(file.exists(gearth))], kmlD@fName, '&', sep=" "), ignore.stdout = TRUE, ignore.stderr = TRUE)
+			}
 		}
-	return(cat('saved file ',kmlD@fName,'\n'))
+	return(cat('saved file ', kmlD@fName, '\n'))
 	})
 
 #' @title Generate an HTML pointwise webmap of a \link{binClstPath_instance}.
@@ -998,9 +998,7 @@ setMethod("bkml",signature(obj="binClstPath"),
 #' pmap(mybcp)
 #' }
 
-setGeneric("pmap",
-           function(obj,folder='embcDocs',apiKey="",mapType='SATELLITE',markerRadius=15,display=FALSE)
-           {standardGeneric("pmap")})
+setGeneric("pmap", function(obj, folder='embcDocs', apiKey="", mapType='SATELLITE', markerRadius=15, display=FALSE) {standardGeneric("pmap")})
 
 #' @rdname pmap
 setMethod("pmap",signature(obj="binClstPath"),

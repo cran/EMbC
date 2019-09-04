@@ -8,8 +8,8 @@
 \usage{
 bkml(obj, folder = "embcDocs", markerRadius = 15, display = FALSE)
 
-\S4method{bkml}{binClstPath}(obj, folder = "embcDocs", markerRadius = 15,
-  display = FALSE)
+\S4method{bkml}{binClstPath}(obj, folder = "embcDocs",
+  markerRadius = 15, display = FALSE)
 }
 \arguments{
 \item{obj}{A \link{binClstPath_instance}.}

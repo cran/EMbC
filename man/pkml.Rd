@@ -6,7 +6,8 @@
 \alias{pkml,binClstPath-method}
 \title{Generate a pointwise .kml file of a \link{binClstPath_instance}}
 \usage{
-pkml(obj, folder = "embcDocs", markerRadius = 15, display = FALSE, ...)
+pkml(obj, folder = "embcDocs", markerRadius = 15, display = FALSE,
+  ...)
 
 \S4method{pkml}{binClstPath}(obj, folder, markerRadius, display,
   showClst = numeric(), ...)

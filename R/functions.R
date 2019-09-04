@@ -199,6 +199,7 @@ maxminScale <- function(x)
 # get subPth with selected clusters
 getSubPth <- function(bCP,showClst){
 	subPth <- which(bCP@A %in% showClst)
+	bCP@n <- length(subPth)
 	bCP@pth <- bCP@pth[subPth,]
 	bCP@X <- bCP@X[subPth,]
 	bCP@spn <- bCP@spn[subPth]

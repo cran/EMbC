@@ -9,9 +9,11 @@
 \usage{
 view(obj, ...)
 
-\S4method{view}{binClstPath}(obj, lbl = NULL, lims = NULL, bg = NULL, ...)
+\S4method{view}{binClstPath}(obj, lbl = NULL, lims = NULL, bg = NULL,
+  ...)
 
-\S4method{view}{data.frame}(obj, lbl = NULL, lims = NULL, bg = NULL, ...)
+\S4method{view}{data.frame}(obj, lbl = NULL, lims = NULL, bg = NULL,
+  ...)
 }
 \arguments{
 \item{obj}{A \link{binClstPath_instance} or a data.frame with the format

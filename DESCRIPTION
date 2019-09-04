@@ -1,8 +1,8 @@
 Package: EMbC
 Type: Package
 Title: Expectation-Maximization Binary Clustering
-Version: 2.0.1
-Date: 2018-05-01
+Version: 2.0.2
+Date: 2019-09-01
 Author: Joan Garriga, John R.B. Palmer, Aitana Oltra, Frederic Bartumeus
 Maintainer: Joan Garriga <jgarriga@ceab.csic.es>
 Description: Unsupervised, multivariate, binary clustering for meaningful annotation of data, taking into account the uncertainty in the data. A specific constructor for trajectory analysis in movement ecology yields behavioural annotation of trajectories based on estimated local measures of velocity and turning angle, eventually with solar position covariate as a daytime indicator, ("Expectation-Maximization Binary Clustering for Behavioural Annotation").
@@ -13,8 +13,8 @@ Suggests: move, rgl, knitr
 LinkingTo: Rcpp, RcppArmadillo
 LazyData: true
 VignetteBuilder: knitr
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
 NeedsCompilation: yes
-Packaged: 2018-05-07 10:20:51 UTC; jgarriga
+Packaged: 2019-09-04 16:17:14 UTC; jgarriga
 Repository: CRAN
-Date/Publication: 2018-05-07 10:32:27 UTC
+Date/Publication: 2019-09-04 16:40:02 UTC

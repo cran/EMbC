@@ -1,3 +1,8 @@
+# EMbC 2.0.2
+
+## Bug fixes
+
+	- The parameter *showClst* is now working properly in function *pkml()* (thanks to Huan Xia for noting it).
 
 # EMbC 2.0.1
 
