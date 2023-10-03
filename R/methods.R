@@ -220,7 +220,7 @@ setGeneric("sctr",function(obj,...){standardGeneric("sctr")})
 #' @rdname sctr
 setMethod("sctr",signature(obj="binClst"),function(obj,ref=NULL,showVars=NULL,showClst=NULL, bg=NULL, ...){
 	if (!is.null(ref)){
-		if (class(ref) == 'numeric'){
+		if (inherits(ref, 'numeric')){
 			bCX <- obj
 			bCX@A <- ref
 			}
@@ -419,12 +419,12 @@ setGeneric("chkp",function(obj,...){standardGeneric("chkp")})
 setMethod("chkp",signature(obj="binClst"),function(obj,ctrlLbls=NULL,ctrlClrs=NULL,ctrlLgnd=NULL,lims=NULL){
 
 	if (is.null(ctrlLbls)){
-		if (class(obj)!='binClst') ctrlLbls <- 'height'
+		if (inherits(obj, 'binClst')) ctrlLbls <- 'height'
 		else {
 			return(message('ctrlLbls should be provided'))
 			}
 		}
-	if (class(ctrlLbls)=='character' && ctrlLbls %in% c('height','azimuth','both')){
+	if (inherits(ctrlLbls, 'character') && ctrlLbls %in% c('height','azimuth','both')){
 		solP <- getSolarPos(obj@pth,'both')
 		if (ctrlLbls=='height'){
 			cLbls <- as.integer(solP[,2]<0) +1
@@ -581,7 +581,7 @@ setMethod("cnfm",signature(obj="binClstPath",ref="missing"),function(obj,ref,ret
 
 #' @rdname cnfm
 setMethod("cnfm",signature(obj="binClstStck",ref="missing"),function(obj,ref,ret=FALSE,...){
-	if (all(unlist(lapply(obj@bCS,function(bci) (class(bci)=='binClstPath' && 'lbl' %in% names(bci@pth))))))
+	if (all(unlist(lapply(obj@bCS,function(bci) (inherits(bci, 'binClstPath') && 'lbl' %in% names(bci@pth))))))
 		return(cnfm(obj@bC,as.numeric(unlist(lapply(obj@bCS,function(bci) bci@pth['lbl']))),ret))
 	else
 		cat(paste('Error: no reference labels for ',deparse(substitute(obj)),'\n',sep=''))

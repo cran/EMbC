@@ -4,8 +4,15 @@
 \alias{stbc}
 \title{speed/turn bivariate binary Clustering.}
 \usage{
-stbc(obj, stdv = c(0.1, 5 * pi/180), spdLim = 40, smth = 0,
-  scv = "None", maxItr = 200, info = 0)
+stbc(
+  obj,
+  stdv = c(0.1, 5 * pi/180),
+  spdLim = 40,
+  smth = 0,
+  scv = "None",
+  maxItr = 200,
+  info = 0
+)
 }
 \arguments{
 \item{obj}{A \code{data.frame} object with (timeStamp,lon,lat) values in columns 1:3 respectively. Timestamps must be given

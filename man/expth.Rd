@@ -4,7 +4,9 @@
 \name{expth}
 \alias{expth}
 \title{Synthetic path used in the examples}
-\format{See parameter \code{pth} of the \link{stbc} constructor.}
+\format{
+See parameter \code{pth} of the \link{stbc} constructor.
+}
 \description{
 A data.frame with a synthetically generated trajectory with column values (timeStamps, longitudes, latitudes, labels) and column headers ('dTm','lon','lat','lbl'). The order of the columns is important. Column headers can be whatever but are expected to be there. The only exception is the header for the labels column: if headed as 'lbl' it will be used automatically by any methods that can make use of it.
 }

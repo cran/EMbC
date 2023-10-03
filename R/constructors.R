@@ -96,7 +96,7 @@ embc <- function(X, U=NULL, stdv=NULL, maxItr=200, info=0){
 
 #' @rdname stbc
 stbc <-	function(obj, stdv=c(0.1,5*pi/180), spdLim=40, smth=0, scv='None', maxItr=200, info=0){
-		if (class(obj)=='list'){
+		if (inherits(obj, 'list')){
 			return(stbc.stack(obj, stdv, spdLim, smth, scv, maxItr, info))
 		}
 		else {
@@ -132,7 +132,7 @@ stbc.stack <- function(obj, stdv, spdLim, smth, scv, maxItr, info){
 
 # validity function to link with move objects
 check.move <- function(obj){
-	if (class(obj)!='data.frame'){
+	if (inherits(obj, 'Move')){
 		obj <- tryCatch({
 				data.frame(obj$study.local.timestamp, obj@coords)
 			},

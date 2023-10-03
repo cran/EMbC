@@ -151,7 +151,7 @@ setMarkerSizes <- function(bCP,nMarkerSizeClasses,minMarkerRadius,maxMarkerRadiu
 	return(circleRadiiMeters)}
 
 getSolarPos <- function(pth,scv){
-	solP <- maptools::solarpos(cbind(pth$lon,pth$lat), as.POSIXct(pth$dTm), proj4string = sp::CRS("+proj=longlat +datum=WGS84"))
+	solP <- suntools::solarpos(cbind(pth$lon,pth$lat), as.POSIXct(pth$dTm), proj4string = sp::CRS("+proj=longlat +datum=WGS84"))
 	if (scv=='both') return(solP)
 	else if (scv=='azimuth') return(solP[,1])
 	else if (scv=='height') return(solP[,2])

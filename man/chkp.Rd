@@ -8,8 +8,7 @@
 \usage{
 chkp(obj, ...)
 
-\S4method{chkp}{binClst}(obj, ctrlLbls = NULL, ctrlClrs = NULL,
-  ctrlLgnd = NULL, lims = NULL)
+\S4method{chkp}{binClst}(obj, ctrlLbls = NULL, ctrlClrs = NULL, ctrlLgnd = NULL, lims = NULL)
 }
 \arguments{
 \item{obj}{A \link{binClst_instance}.}
@@ -37,7 +36,7 @@ Plots the labeling profile of a
   information) depicted as background coloured bars.
 }
 \examples{
-# -- apply EMbC to \\code{expth} --
+# -- apply EMbC to \code{expth} --
 mybcp <- stbc(expth)
 # -- plot the labeling profile against 'both' solar covariates --
 chkp(mybcp,ctrlLbls='both',ctrlClrs=RColorBrewer::brewer.pal(8,'Oranges')[1:4])

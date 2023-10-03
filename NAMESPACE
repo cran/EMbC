@@ -13,7 +13,7 @@ importFrom("utils", "browseURL")
 importFrom(mnormt, dmnorm)
 importFrom(mnormt, rmnorm)
 importFrom(mnormt, pd.solve)
-importFrom(maptools, solarpos)
+importFrom(suntools, solarpos)
 
 export(embc)
 export(stbc)

@@ -1,3 +1,9 @@
+## EMbC 2.0.4
+
+### Fixes
+
+  - Replaced function maptools:solarpos() by suntools:solarpos() due to changes in the maptools R package.
+
 ## EMbC 2.0.3
 
 ### Bug fixes

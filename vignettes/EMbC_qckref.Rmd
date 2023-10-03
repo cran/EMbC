@@ -4,7 +4,7 @@ author: |-
   J.Garriga; F.Bartumeus\
   ICREA Movement Ecology Laboratory (CEAB-CSIC)\
   jgarriga@ceab.csic.es
-date: "Version 2.0.1, `r format(Sys.Date(), '%b %Y')`"
+date: "Version 2.0.4, `r format(Sys.Date(), '%b %Y')`"
 output:
   pdf_document:
     number_sections: yes
@@ -24,13 +24,13 @@ options(width=80)
 
 \bigskip
 \begin{abstract}
-In this document we give a brief overview of the EMbC R-package with special emphasis on its use for behavioural annotation of animal's movement trajectories. For details about the EMbC algorithm please refer to (Garriga et. al 2016) and for further details about the package please refer to the package reference manual.
+In this document we give a brief overview of the EMbC R-package with special emphasis on its use for behavioral annotation of animal's movement trajectories. For details about the EMbC algorithm please refer to (Garriga et. al 2016) and for further details about the package please refer to the package reference manual.
 \end{abstract}
 \bigskip
 
 # The EMbC Algorithm
 
-The Expectation-maximization binary clustering (EMbC) is a general purpose, unsupervised, multi-variate, clustering algorithm [@embc2015], driven by two main motivations: (i) it looks for a good compromise between statistical soundness and ease and generality of use - by minimizing prior assumptions and favouring the semantic interpretation of the final clustering- and, (ii) it allows taking into account the uncertainty in the data. These two features make it specially suitable for the behavioural annotation of animal's movement trajectories.
+The Expectation-maximization binary clustering (EMbC) is a general purpose, unsupervised, multi-variate, clustering algorithm [@embc2015], driven by two main motivations: (i) it looks for a good compromise between statistical soundness and ease and generality of use - by minimizing prior assumptions and favouring the semantic interpretation of the final clustering- and, (ii) it allows taking into account the uncertainty in the data. These two features make it specially suitable for the behavioral annotation of animal's movement trajectories.
 
 The method is a variant of the well sounded Expectation-Maximization Clustering (EMC) algorithm - i.e. under the assumption of an underlying Gaussian Mixture Model (GMM) describing the distribution of the data-set - but constrained to generate a binary partition of the input space. This is achieved by means of the *delimiters*, a set of parameters that discretize the input features into high and low values and define the binary regions of the input space. As a result, each final cluster includes a unique  combination of either low or high values of the input variables. Splitting the input features into low and high values is what favours the semantic interpretation of the final clustering.
 
@@ -44,7 +44,7 @@ With respect to close related methods like EMC and Hidden Markov Models (HMM), t
 
 # The EMbC R-package
 
-The EMbC algorithm is of general purpose and can deal with any type of data sets or time series. However, the EMbC R-package is mainly intended for the behavioural annotation of animals' movement trajectories where an easy interpretation of the final clustering and the reliability of the data constitute two key issues, and the conditions of bi-modality and unfair temporal dependence usually hold. In particular, the temporal dependence condition is easily violated in animal's movement trajectories because of the heterogeneity in empirical time series due to large gaps, or prefixed sampling scheduling.
+The EMbC algorithm is of general purpose and can deal with any type of data sets or time series. However, the EMbC R-package is mainly intended for the behavioral annotation of animals' movement trajectories where an easy interpretation of the final clustering and the reliability of the data constitute two key issues, and the conditions of bi-modality and unfair temporal dependence usually hold. In particular, the temporal dependence condition is easily violated in animal's movement trajectories because of the heterogeneity in empirical time series due to large gaps, or prefixed sampling scheduling.
 
 Input movement trajectories are given either as a *data.frame* or a *Move* object from the **move** R-package.  The package deals also with stacks of trajectories for population level analysis. Segmentation is based on local estimates of velocity and turning angle, eventually including a solar position covariate as a daytime indicator.
 
@@ -52,13 +52,13 @@ The core clustering method is complemented with a set of functions to easily vis
 
   * clustering statistics,
   * clustering scatter-plot (2D and 3D),
-  * temporal labelling profile (ethogram),
+  * temporal labeling profile (ethogram),
   * plotting of intermediate variables,
-  * confusion matrix (numerical validation with respect to an expert's labelling),
+  * confusion matrix (numerical validation with respect to an expert's labeling),
   * visual validation versus external information (e.g. environmental data),
   * generation of kml or web-map documents for detailed inspection of the output.
 
-Also, some functions are provided to further refine the output, either by pre-processing (smoothing) the input data or by post-processing (smoothing, relabelling, merging) the output labelling.
+Also, some functions are provided to further refine the output, either by pre-processing (smoothing) the input data or by post-processing (smoothing, relabeling, merging) the output labeling.
 
 The results obtained for different empirical datasets suggest that the EMbC algorithm  behaves reasonably well for a wide range  of tracking technologies, species, and ecological contexts (e.g. migration, foraging).
 
@@ -68,7 +68,7 @@ The EMbC package has dependencies with the following packages:
 
   - **methods**, *formal methods and classes* [@methods];
   - **sp**, *classes and methods for spatial data* [@sp1; @sp2];
-  - **maptools**, *tools for reading and handling spatial objects* [@maptools];
+  - **suntools**, *calculate sun position, sunrise, sunset, solar noon and twilight* [@suntools];
   - **mnormt**, *the multivariate normal and t distributions* [@mnormt];
   - **RColorBrewer**, *ColorBrewer palettes* [@RColorBrewer];
 
@@ -88,35 +88,35 @@ Instances of these classes are build by means of two main constructors:
 
   - *embc()*, the main core of the package, implementing the EMbC algorithm itself; this constructor takes as input a matrix of data-points and returns an object of class *binClst* with the **multivariate** binary clustering of the input data;
 
-  - *stbc()*, a specific constructor for the behavioural annotation of movement trajectories; the input to this constructor is a trajectory (given either as a data.frame, a *Move* object or a list of them) and returns an object of class *binClstPath* (or any of its child classes) with the **bivariate** (velocity/turn) clustering of the trajectory; eventually it can  compute a **trivariate** clustering by including a parameter indicating a solar covariate (either *height* or *azimuth*) to be used as a daytime indicator.
+  - *stbc()*, a specific constructor for the behavioral annotation of movement trajectories; the input to this constructor is a trajectory (given either as a data.frame, a *Move* object or a list of them) and returns an object of class *binClstPath* (or any of its child classes) with the **bivariate** (velocity/turn) clustering of the trajectory; eventually it can  compute a **trivariate** clustering by including a parameter indicating a solar covariate (either *height* or *azimuth*) to be used as a daytime indicator.
 
-The behaviour of the constructors can be modified by means of different parameters (*e.g.* maximum number of iterations, information shown at each step, pre-smoothing of the data).
+The behavior of the constructors can be modified by means of different parameters (*e.g.* maximum number of iterations, information shown at each step, pre-smoothing of the data).
 
 The output objects have several slots containing all information related to the binary clustering (input data, intermediate computations and output data). All slots are accessible and can be used with any R function external to the package or even modified. However, **we recommend not to manually change the values in the slots in order to keep the internal consistency**.
 
 Let's load the package;
 
-```{r, warning=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(EMbC)
 ```
 
 # Class: binClst
 
-This is the core class that implements the multivariate binary clustering algorithm. The input data-set is given as a matrix with data points given as rows and input features as columns. No more than 5 (6 at most) variables should be used in order to get a human interpretable set of clusters.
+This is the core class that implements the multivariate binary clustering algorithm. The input data-set is given as a matrix with data points given as rows and input features as columns. No more than 5 (6 at most) variables should be used in order to get a meaningful set of clusters.
 
-Let's use the object *x2d* included in the package. This object contains a set of data points generated from a bivariate GMM with four components (slot x2d@D), and a labelling indicating which component generated each data point (slot x2d@L);
+Let's use the object *x2d* included in the package. This object contains a set of data points generated from a bivariate GMM with four components (slot x2d@D), and a labeling indicating which component generated each data point (slot x2d@L);
 
 
 ```{r, fig.width=5, fig.height=4.0, fig.align='center'}
 par(mgp=c(1.5, 0.4, 0), cex.lab=0.8, cex.axis=0.8)
 plot(x2d@D, col=x2d@L, xlab='X1', ylab='X2')
 # x2d@D is a matrix with the input data
-# x2d@L is a numeric vector with the reference labelling
+# x2d@L is a numeric vector with the reference labeling
 ```
 
 ## Binary clustering
 
-To perform the clustering of a data-set we simply call the *embc()* constructor passing in a matrix with the input data and storing the result in a variable (*e.g.* *mybc*);
+We can cluster a general dataset by calling the *embc()* constructor and passing in the input data, in matrix form, and storing the result in an output variable (*e.g.* *mybc*);
 
 ```{r, }
 mybc <- embc(x2d@D)
@@ -137,7 +137,7 @@ slotNames(mybc)
   - mybc@R, a matrix with the values of the delimiters for each binary region;
   - mybc@P, a list where each element is a named list with the Gaussian parameters of each output cluster;
   - mybc@W, a matrix with the likelihood weights of each data-point with respect to each output cluster;
-  - mybc@A, a numeric vector with the output labelling of each location, (the number of the cluster with the highest likelihood weight, coded as 1:LL, 2:LH, 3:HL, and 4:HH).
+  - mybc@A, a numeric vector with the output labeling of each location, (the number of the cluster with the highest likelihood weight, coded as 1:LL, 2:LH, 3:HL, and 4:HH).
 
 ## Likelihood Plot
 
@@ -179,18 +179,18 @@ The function *sctr()* makes a scatter-plot of the data-points, showing the clust
 sctr(mybc)
 ```
 
-The *NC* in the legend stands for not classified points. Not classified points may appear only when performing the behavioural annotation of movement trajectories (explained later in this document) and correspond to outliers due to errors or gaps in the trajectory or, typically, to the last track of the trajectory.
+The *NC* in the legend stands for not classified points. Not classified points may appear only when performing the behavioral annotation of movement trajectories (explained later in this document) and correspond to outliers due to errors or gaps in the trajectory or, typically, to the last track of the trajectory.
 
 ## Clustering validation
 
-In a supervised case, that is in case that an expert's labelling is available, we can use this labelling to validate the results of the clustering. The expert labelling must be numerically coded and translated to the range of the number of clusters, and must be given as a numeric vector with one numeric label for each location.
+In a supervised case, that is in case that an expert's labeling is available, we can use this labeling to validate the results of the clustering. The expert labeling must be numerically coded and translated to the range of the number of clusters, and must be given as a numeric vector with one numeric label for each location.
 
-We can make a visual validation of the clustering versus the expert labelling by means of the *sctr()* function passing in the expert labelling vector as a second parameter;
+We can make a visual validation of the clustering versus the expert labeling by means of the *sctr()* function passing in the expert labeling vector as a second parameter;
 
 ```{r, fig.width=5, fig.height=4.8, fig.align='center'}
 sctr(mybc, x2d@L)
 # the top plot shows the clustering result;
-# the bottom plot shows the reference labelling;
+# the bottom plot shows the reference labeling;
 ```
 
 We can perform a numeric assessment of the clustering in terms of a confusion matrix by means of the function *cnfm()*;
@@ -213,9 +213,9 @@ As an example, the package includes an object named *expth*. This is a synthetic
 head(expth)
 ```
 
-*expth* is a synthetically generated trajectory with expert labelling (note the column expth\$lbl). Further columns of data can be included in the input *data.frame* as long as the first three columns respect the required format.
+*expth* is a synthetically generated trajectory with expert labeling (note the column expth\$lbl). Further columns of data can be included in the input *data.frame* as long as the first three columns respect the required format.
 
-**Tip: by including an expert labelling with a column labelled *lbl* all validation functions will make use of it by default.**
+**Tip: by including an expert labeling with a column labeled *lbl* all validation functions will make use of it by default.**
 
 ## Bivariate velocity-turn clustering
 
@@ -257,14 +257,14 @@ sctr(mybcp)
 
 ```{r, }
 cnfm(mybcp)
-# the expert labelling given in expth$lbl is used by default
+# the expert labeling given in expth$lbl is used by default
 ```
 
-Nonetheless, the *binClstPath* class has some particular functionalities of special interest for the case of behavioural annotation of movement trajectories. These functionalities are described in the following.
+Nonetheless, the *binClstPath* class has some particular functionalities of special interest for the case of behavioral annotation of movement trajectories. These functionalities are described in the following.
 
 ### Labeling profile
 
-The function *lblp()* plots the temporal series of data and the temporal profile of the behavioural labelling;
+The function *lblp()* plots the temporal series of data and the temporal profile of the behavioral labeling;
 
 ```{r, fig.width=5, fig.height=3.5, fig.align='center'}
 # lims=c(a, b) limits the plot to a chunk of the trajectory
@@ -273,7 +273,7 @@ lblp(mybcp, lims=c(100, 500))
 
 ### Fast visualization of the annotated trajectory
 
-The function *view()* shows the annotated trajectory and a top panel with the temporal sequence of behaviours;
+The function *view()* shows the annotated trajectory and a top panel with the temporal sequence of behaviors;
 
 ```{r, fig.width=5, fig.height=3.5, fig.align='center'}
 # this function allows a parameter lims=c(a,b) as well
@@ -296,7 +296,7 @@ The burst-wise visualization requires the computation of burst segments and midp
 
 ### Plot intermediate variables
 
-Intermediate data computed by the *stbc()* constructor and stored in the *binClstPath* object can be easily plotted with automatic formatting and labelling of axes;
+Intermediate data computed by the *stbc()* constructor and stored in the *binClstPath* object can be easily plotted with automatic formatting and labeling of axes;
 
 ```{r, fig.width=5, fig.height=4.8, fig.align='center'}
 # plotting time-spans, distances and heading directions;
@@ -314,7 +314,7 @@ varp(mybcp@X)
 varp(mybcp@U)
 ```
 
-Indeed, the function *varp()* is a wrapper for the R *plot()* function. The purpose of this function is simply to ease the visualization of intermediate variables by formatting and labelling the axes accordingly to each one.
+Indeed, the function *varp()* is a wrapper for the R *plot()* function. The purpose of this function is simply to ease the visualization of intermediate variables by formatting and labeling the axes accordingly to each one.
 
 ## Using *Move* objects from the R-package *move*
 
@@ -338,7 +338,7 @@ leroybc <- stbc(leroy, info=-1)
 
 Daytime covariates refer to the solar position. This can be given as solar height in degrees above the horizon (night/day distinction), or by solar azimuth in degrees from north (sunrise/sunset distinction).
 
-Including daytime covariates is the natural way of incorporating time information in the clustering of an animal's movement trajectory, with the potential advantage of increasing the maximum number of output clusters to $2^3=8$, *i.e.* the number of movement behaviours that can potentially be distinguish.
+Including daytime covariates is the natural way of incorporating time information in the clustering of an animal's movement trajectory, with the potential advantage of increasing the maximum number of output clusters to $2^3=8$, *i.e.* the number of movement behaviors that can potentially be distinguish.
 
 A trivariate clustering including a daytime covariate is done by means of the parameter *scv* with possible values 'height' or 'azimuth';
 
@@ -354,7 +354,7 @@ Let's see the statistics of the clustering;
 stts(leroybc3)
 ```
 
-Features are ordered as X1:daytime, X2:velocity and X3:turn. Note that highs and lows for daytime (the solar height in degrees above the horizon) do not necessarily correspond to daytime or night-time clusters (note the negative mean for X1 in HXX clusters). This is so because almost all of the activity of this animal happens during the night and it is more likely to discern different behaviours along night-time.
+Features are ordered as X1:daytime, X2:velocity and X3:turn. Note that highs and lows for daytime (the solar height in degrees above the horizon) do not necessarily correspond to daytime or night-time clusters (note the negative mean for X1 in HXX clusters). This is so because almost all of the activity of this animal happens during the night and it is more likely to discern different behaviors along night-time.
 
 ## Trivariate clustering scatter plot
 
@@ -364,7 +364,7 @@ By default, the *sctr()* function of a trivariate clustering depicts a double sc
 sctr(leroybc3, showVars=c(1, 2, 3))
 # showVars=c(1,2,3) is the default option and it is only shown for illustrative purposes
 # by default the background colour is set to light-grey to enhance visibility
-# the "bg"" parameter allows changing this default behaviour
+# the "bg"" parameter allows changing this default behavior
 ```
 
 If the R-package *rgl* is installed one can use the function *sct3()* to get a dynamic 3D (i.e. can be zoomed and rotated) plot, more useful for a visual understanding of the clusters.
@@ -378,15 +378,15 @@ The *sct3()* function is defined for and inherited from the *binClst* class, and
 
 ## Smoothing
 
-When clustering a time series the EMbC disregards the temporal information. As a result, the output labelling may reveal small (possibly irrelevant) changes in behaviour framed in a broader temporal context (*e.g.* a long-term predominant behavioural mode).
+When clustering a time series the EMbC disregards the temporal information. As a result, the output labeling may reveal small (possibly irrelevant) changes in behavior framed in a broader temporal context (*e.g.* a long-term predominant behavioral mode).
 
-The package includes two possibilities to account for the temporal information in the time series and smooth out the fine grain locality of the output labelling.
+The package includes two possibilities to account for the temporal information in the time series and smooth out the fine grain locality of the output labeling.
 
-The *smth()* function applies a post-smoothing procedure [@embc2015] to the output labelling and returns a smoothed copy of the input instance;
+The *smth()* function applies a post-smoothing procedure [@embc2015] to the output labeling and returns a smoothed copy of the input instance;
 
 ```{r, }
-# dlta is the maximum likelihood difference to accept a relabelling
-# dlta=1 (accept all changes) is the default behaviour
+# dlta is the maximum likelihood difference to accept a relabeling
+# dlta=1 (accept all changes) is the default behavior
 postbc3 <- smth(leroybc3, dlta=0.9)
 ```
 
@@ -397,7 +397,7 @@ Alternatively, a pre-smoothing of the input data is also possible by means of th
 prebc3 <- stbc(leroy, smth=1, scv='height', info=-1)
 ```
 
-The *lblp()* function allows comparing two output labellings, adding a bottom line indicating the differences;
+The *lblp()* function allows comparing two output labelings, adding a bottom line indicating the differences;
 
 ```{r, fig.width=6, fig.height=3.5, fig.align='center'}
 lblp(postbc3, smth(prebc3), lims=c(200, 600))
@@ -407,9 +407,9 @@ lblp(postbc3, smth(prebc3), lims=c(200, 600))
 # this is useful for saving memory in case of long trajectories;
 ```
 
-## Relabelling
+## Relabeling
 
-Note that by pre-smoothing the input data, cluster 5 (HLL) has been merged into cluster 6 (HLH) and we get a final clustering with only 7 different behaviours. When merging occurs, the semantics of the final labelling is somewhat misleading because the final labelling is only a result of how the algorithm evolved until reaching the merging point. In any case, the label should be read as HLX, that is, by taking into account that the last feature (in this case the turn) is meaningless given the values of the rest (*i.e* turn can be either H or L given H values of daytime and L values of velocity).
+Note that by pre-smoothing the input data, cluster 5 (HLL) has been merged into cluster 6 (HLH) and we get a final clustering with only 7 different behaviors. When merging occurs, the semantics of the final labeling is somewhat misleading because the final labeling is only a result of how the algorithm evolved until reaching the merging point. In any case, the label should be read as HLX, that is, by taking into account that the last feature (in this case the turn) is meaningless given the values of the rest (*i.e* turn can be either H or L given H values of daytime and L values of velocity).
 
 Using the *pkml()* function we can visualize which locations correspond to cluster HLH;
 
@@ -425,22 +425,22 @@ pkml(smth(prebc3), showClst=6, display=TRUE)
 
 By combining the spatially clustered distribution of locations HLX (Figure \ref{pkml0}) with the semantics of the cluster (high daytime, low velocity), we could tell that these locations are most probably indicating the nests.
 
-Obviously, the package does not deal with labels like HLX. However, one can change labels as desired (even to manually force the merging of two clusters). In this case, we would probably feel more comfortable by relabelling the cluster HLH (cluster number 6) as HLL (cluster number 5) to suggest a more clear semantics of *resting* behaviour;
+Obviously, the package does not deal with labels like HLX. However, one can change labels as desired (even to manually force the merging of two clusters). In this case, we would probably feel more comfortable by relabeling the cluster HLH (cluster number 6) as HLL (cluster number 5) to suggest a more clear semantics of *resting* behavior;
 
 ```{r, }
 rlbl(prebc3, 6, 5)
 ```
 
-Note that the function *rlbl()* does not return a relabelled copy of the input instance, instead it relabels the self instance. Nonetheless, the parameters of the clustering remain unchanged. The relabelling is effective only for visualization purposes and can be easily reversed by means of the parameter "reset".
+Note that the function *rlbl()* does not return a relabeled copy of the input instance, instead it relabels the self instance. Nonetheless, the parameters of the clustering remain unchanged. The relabeling is effective only for visualization purposes and can be easily reversed by means of the parameter "reset".
 
 ## Validation versus external information
 
-The *chkp()* function is similar to *lblp()* but plots the labelling profile versus a control variable (*e.g.* environmental information). The control variable must be given as a numeric vector that is depicted as coloured background bars (with specific parameters to control the colouring and legend labels);
+The *chkp()* function is similar to *lblp()* but plots the labeling profile versus a control variable (*e.g.* environmental information). The control variable must be given as a numeric vector that is depicted as coloured background bars (with specific parameters to control the colouring and legend labels);
 
 ```{r, fig.width=6, fig.height=3, fig.align='center'}
 chkp(smth(prebc3), lims=c(200, 600))
 # the solar height is the control variable used by default;
-# note the relabelling we did before;
+# note the relabeling we did before;
 ```
 
 # Class: binClstStck
@@ -475,11 +475,11 @@ stts(mystck)
 sctr(mystck)
 ```
 
-The exception is the *cnfm()* function. This function will work only if expert's labelling is supplied for all trajectories in the stack (in our example, *leroy*  does not have expert's labelling);
+The exception is the *cnfm()* function. This function will work only if expert's labeling is supplied for all trajectories in the stack (in our example, *leroy*  does not have expert's labeling);
 
 ```{r, }
 cnfm(mystck)
-# this will only work when expert labelling is given for all trajectories in the stack
+# this will only work when expert labeling is given for all trajectories in the stack
 ```
 
 ## binClstStck slots
@@ -529,7 +529,7 @@ sctr(slct(mystck, 3))  # right panel
 # sctr(slct(mystck,1)) yields the same output as sctr(bcInd1) or sctr(mystck@bCS[[1]]);
 ```
 
-## Comparing individual's behaviour with population's average behaviour
+## Comparing individual's behavior with population's average behavior
 
 We can use all the functionality of a *binClstPath* object that allows comparisons (*e.g.* *sctr()*, *lblp()*, *cnfm()*) to make numeric assessments or visualizations of diferences among individuals or among individuals and population:
 
